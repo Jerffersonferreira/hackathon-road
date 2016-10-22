@@ -14,6 +14,12 @@ function copy() {
 			cwd: config.path.html.source,
 			src: "**",
 			dest: config.path.html.build
+		},
+		vendor: {
+			expand: true,
+			cwd: config.path.vendor.source,
+			src: "**",
+			dest: config.path.vendor.build
 		}
 	};
 }

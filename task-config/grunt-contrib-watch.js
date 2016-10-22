@@ -24,6 +24,10 @@ function watch() {
 		html: {
 			files: config.path.html.source + "**/*",
 			tasks: ["html:dev"]
+		},
+		vendor: {
+			files: config.path.vendor.source + "**/*",
+			tasks: ["vendor"]
 		}
 	};
 }
