@@ -8,6 +8,12 @@ function copy() {
 			cwd: config.path.img.source,
 			src: "**",
 			dest: config.path.img.build
+		},
+		html: {
+			expand: true,
+			cwd: config.path.html.source,
+			src: "**",
+			dest: config.path.html.build
 		}
 	};
 }

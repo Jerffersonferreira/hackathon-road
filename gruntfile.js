@@ -40,6 +40,7 @@ module.exports = function (grunt) {
 	grunt.registerTask("css:dev", ["clean:css", "less:dev"]);
 	grunt.registerTask("images:dev", ["clean:img", "copy:img"]);
 	grunt.registerTask("javascript:dev", ["clean:js", "browserify:dev"]);
+	grunt.registerTask("html", ["clean:html", "copy:html"]);
 
 	grunt.registerTask("css:prod", ["clean:css", "less:prod"]);
 	grunt.registerTask("images:prod", ["clean:img", "copy:img"]);

@@ -5,7 +5,8 @@ function clean() {
 	return {
 		css: [config.path.less.build + "*"],
 		js: [config.path.js.build + "*"],
-		img: [config.path.img.build + "*", config.path.img.temp + "*"]
+		img: [config.path.img.build + "*", config.path.img.temp + "*"],
+		html: [config.path.html.build + "*.html", config.path.html.build + "screen/*"]
 	};
 }
 

@@ -12,7 +12,9 @@ const
 
 	IMG_SOURCE_PATH = SOURCE_PATH + "img/",
 	IMG_BUILD_PATH = BUILD_PATH + "img/",
-	IMG_TEMP_PATH = TEMP_PATH + "img/";
+	IMG_TEMP_PATH = TEMP_PATH + "img/",
+
+	HTML_SOURCE_PATH = SOURCE_PATH + "html/";
 
 module.exports = {
 	path: {
@@ -31,6 +33,10 @@ module.exports = {
 			source: IMG_SOURCE_PATH,
 			build: IMG_BUILD_PATH,
 			temp: IMG_TEMP_PATH
+		},
+		html: {
+			source: HTML_SOURCE_PATH,
+			build: BUILD_PATH
 		}
 	}
 };

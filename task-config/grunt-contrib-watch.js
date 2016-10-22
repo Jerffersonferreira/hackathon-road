@@ -20,6 +20,10 @@ function watch() {
 		img: {
 			files: config.path.img.source + "**/*",
 			tasks: ["images:dev"]
+		},
+		html: {
+			files: config.path.html.source + "**/*",
+			tasks: ["html:dev"]
 		}
 	};
 }
