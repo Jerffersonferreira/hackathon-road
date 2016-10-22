@@ -3,13 +3,16 @@ const
 	SOURCE_PATH = "source/",
 	BUILD_PATH = "build/",
 	TEMP_PATH = "temp/",
+
 	JS_SOURCE_PATH = SOURCE_PATH + "js/",
 	JS_BUILD_PATH = BUILD_PATH + "js/",
+
 	LESS_SOURCE_PATH = SOURCE_PATH + "less/",
 	LESS_BUILD_PATH = BUILD_PATH + "css/",
+
 	IMG_SOURCE_PATH = SOURCE_PATH + "img/",
-	IMG_BUILD_PATH = BUILD_PATH + "img/";
-IMG_TEMP_PATH = TEMP_PATH + "img/";
+	IMG_BUILD_PATH = BUILD_PATH + "img/",
+	IMG_TEMP_PATH = TEMP_PATH + "img/";
 
 module.exports = {
 	path: {
