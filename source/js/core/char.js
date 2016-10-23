@@ -16,8 +16,6 @@ function Char(context) {
 
 	this.context = context;
 	this.setImage("http://192.168.25.176:7000/img/char.png", this.width);
-
-	this.render();
 }
 
 Char.prototype = new Drawable();
@@ -56,6 +54,14 @@ Char.prototype.walk = function () {
 
 Char.prototype.setWidthKnownArea = function (width) {
 	this.widthKnownArea = width;
+};
+
+Char.prototype.goTo = function (side) {
+	if(side === "left") {
+		this.x = 0;
+	} else {
+		this.x = this.widthKnownArea - this.width;
+	}
 };
 
 module.exports = Char;

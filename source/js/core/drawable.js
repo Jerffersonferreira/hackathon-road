@@ -11,12 +11,35 @@ function Drawable() {
 	this.imageHeight = 0;
 	this.isTiling = false;
 	this.image = null;
+	this.isPaused = true;
 	this.super = this;
 }
 
 Drawable.prototype = {
+	play: function () {
+		if(!this.isPaused) return;
+
+		this.isPaused = false;
+		this.render();
+	},
+	pause: function () {
+		if(this.isPaused) return;
+
+		this.isPaused = true;
+	},
+	setWidth: function (width) {
+		var that = this;
+		this.width = width;
+	},
+	setHeight: function (height) {
+		var that = this;
+		this.height = height;
+	},
 	beforeRender: function () {},
+	afterRender: function () {},
 	render: function () {
+		if(this.isPaused) return;
+
 		var that = this;
 
 		this.beforeRender();
@@ -30,6 +53,8 @@ Drawable.prototype = {
 		requestAnimationFrame(function () {
 			that.render();
 		});
+
+		this.afterRender();
 	},
 	setImageX: function (x) {
 		if(x >= 0 && x < this.imageWidth) {
@@ -155,6 +180,9 @@ Drawable.prototype = {
 		this.image.onload = function () {
 			that.imageWidth = width || that.image.width;
 			that.imageHeight = height || that.image.height;
+
+			that.setWidth(width || that.width);
+			that.setHeight(height || that.height);
 		};
 	}
 };

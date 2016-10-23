@@ -32,11 +32,16 @@ Game.prototype = {
 	},
 	addRoad: function () {
 		this.road = new Road(this.context, true);
-		this.road.width = this.width;
-		this.road.height = this.height;
+		this.road.setWidth(this.width);
+		this.road.setHeight(this.height);
+		this.road.play();
 	},
 	run: function (event) {
-		console.log(event);
+		var side;
+
+		this.road.roll();
+		side = event.x / this.width <= 0.5 ? "left" : "right";
+		this.char.goTo(side);
 	},
 	tapEvent: function (event) {
 		this.run(event);
