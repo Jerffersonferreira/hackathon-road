@@ -14,7 +14,7 @@ function Road(context, isTiling) {
 	this.remainingRoll = 0;
 	this.context = context;
 	this.isTiling = isTiling;
-	this.setImage("http://192.168.25.176:7000/img/bricks-2.jpg");
+	this.setImage("https://jerffersonferreira.github.io/hackathon-road/img/bricks-2.jpg");
 }
 
 Road.prototype = new Drawable();

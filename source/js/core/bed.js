@@ -16,7 +16,7 @@ function Bed(context, side) {
 	this.accumulator = 0;
 
 	this.context = context;
-	this.setImage("http://192.168.25.176:7000/img/bed-" + this.side + ".png");
+	this.setImage("https://jerffersonferreira.github.io/hackathon-road/img/bed-" + this.side + ".png");
 }
 
 Bed.prototype = new Drawable();

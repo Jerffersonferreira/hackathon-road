@@ -15,7 +15,7 @@ function Char(context) {
 	this.accumulator = 0;
 
 	this.context = context;
-	this.setImage("http://192.168.25.176:7000/img/char.png", this.width);
+	this.setImage("https://jerffersonferreira.github.io/hackathon-road/img/char.png", this.width);
 }
 
 Char.prototype = new Drawable();
