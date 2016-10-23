@@ -12,13 +12,61 @@ function Road(context, isTiling) {
 	this.y = 0;
 	this.rollStep = 109; // bed height
 	this.remainingRoll = 0;
-	window.objectList = this.objectList;
 	this.context = context;
 	this.isTiling = isTiling;
 	this.setImage("http://192.168.25.176:7000/img/bricks-2.jpg");
 }
 
 Road.prototype = new Drawable();
+
+Road.prototype.reset = function () {
+	var that = this;
+
+	this.pause();
+	this.started = false;
+	this.rollStep = 109;
+	this.objectList = [];
+	this.remainingRoll = 0;
+	this.setImageY(0);
+
+	that.objectList.forEach(function (object) {
+		object.pause();
+	});
+
+	function render() {
+		var object;
+
+		that.render();
+
+		if(that.char) {
+			that.char.pause();
+			if(!that.char.imageWidth) {
+				that.char.imageLoadCallback = function () {
+					that.char.render();
+					that.char.stop();
+					that.char.imageLoadCallback = function () {};
+				};
+			} else {
+				that.char.render();
+				that.char.stop();
+			}
+		}
+
+		while(that.isReadToAddObject()) {
+			object = that.getRandomObject();
+			that.addObject(object, object.side);
+		}
+
+		that.updateObjectList(0);
+		that.imageLoadCallback = function () {};
+	}
+
+	if(!this.imageWidth) {
+		//this.imageLoadCallback = render;
+	} else {
+		//render();
+	}
+};
 
 Road.prototype.isReadToAddObject = function () {
 	return this.objectList.length <= Math.ceil(this.height / this.rollStep) / 3 + 3;
@@ -29,11 +77,19 @@ Road.prototype.updateObjectList = function (step) {
 	this.objectList.slice(0).forEach(function (object, i) {
 		object.y += step;
 
-		if(object.y >= object.height * -1 && object.y <= that.height) {
-			object.play();
-		} else if(object.y > that.height) {
-			object.pause();
-			that.objectList.splice(i, 1);
+		if(that.started) {
+			if(object.y >= object.height * -1 && object.y <= that.height) {
+				object.play();
+			} else if(object.y > that.height) {
+				object.pause();
+				that.objectList.splice(i, 1);
+			}
+		} else {
+			object.imageLoadCallback = function () {
+				object.render();
+				object.imageLoadCallback = function () {};
+			};
+
 		}
 	});
 };
@@ -44,14 +100,23 @@ Road.prototype.beforeRender = function () {
 	}
 };
 
+Road.prototype.getRandomObject = function () {
+	var side;
+
+	side = Math.random() < 0.5 ? "left" : "right";
+
+	return new Bed(this.context, side);
+};
+
 Road.prototype.afterRender = function () {
 	if(this.isPaused) {
 		return;
 	}
 	var step = 3,
-		side;
+		object;
 
-	if(this.char) {
+	if(this.started && this.char) {
+		this.char.play();
 		this.char.walk();
 	}
 
@@ -59,8 +124,8 @@ Road.prototype.afterRender = function () {
 	this.setImageY(this.imageY + step);
 
 	if(this.isReadToAddObject()) {
-		side = Math.random() < 0.5 ? "left" : "right";
-		this.addObject(new Bed(this.context, side), side);
+		object = this.getRandomObject();
+		this.addObject(object, object.side);
 	}
 };
 
@@ -73,7 +138,7 @@ Road.prototype.addObject = function (object, side) {
 		object.x = this.imageX;
 	}
 
-	object.y = (this.objectList.length + 1) * this.rollStep * -3 + this.height - this.rollStep;
+	object.y = (this.objectList.length + 1) * this.rollStep * -3 + this.height;
 
 	this.objectList.push(object);
 };
@@ -93,10 +158,24 @@ Road.prototype.setHeight = function (height) {
 
 Road.prototype.addChar = function (char) {
 	if(!(char instanceof Drawable)) throw new Error("char must be a Drawable object");
+	var that = this;
+
 	this.char = char;
 	this.char.y = this.height - this.char.height;
 	this.char.setWidthKnownArea(this.width);
-	this.char.play();
+
+	if(this.started) {
+		this.char.play();
+	} else {
+		if(!this.char.imageWidth) {
+			this.char.imageLoadCallback = function () {
+				that.char.render();
+				that.char.imageLoadCallback = function () {};
+			};
+		} else {
+			this.char.render();
+		}
+	}
 };
 
 Road.prototype.roll = function () {

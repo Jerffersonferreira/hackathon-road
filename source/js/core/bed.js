@@ -4,10 +4,7 @@ var requestAnimationFrame = require("../util/request-animation-frame"),
 function Bed(context, side) {
 	var that = this;
 
-	if(!side) {
-		side = "left";
-	}
-
+	this.side = side || "left";
 	this.widthKnownArea = 0;
 	this.spriteDirection = 1;
 	this.spriteTile = 0;
@@ -19,7 +16,7 @@ function Bed(context, side) {
 	this.accumulator = 0;
 
 	this.context = context;
-	this.setImage("http://192.168.25.176:7000/img/bed-" + side + ".png");
+	this.setImage("http://192.168.25.176:7000/img/bed-" + this.side + ".png");
 }
 
 Bed.prototype = new Drawable();

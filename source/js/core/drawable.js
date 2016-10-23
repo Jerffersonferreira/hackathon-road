@@ -1,6 +1,7 @@
-var renderer = require("../util/request-animation-frame");
+var requestAnimationFrame = require("../util/request-animation-frame");
 
 function Drawable() {
+	this.started = false;
 	this.x = 0;
 	this.y = 0;
 	this.width = 0;
@@ -20,7 +21,9 @@ Drawable.prototype = {
 		if(!this.isPaused) return;
 
 		this.isPaused = false;
-		this.render();
+		this.started = true;
+
+		this.requestAnimationFrame();
 	},
 	pause: function () {
 		if(this.isPaused) return;
@@ -37,7 +40,7 @@ Drawable.prototype = {
 	},
 	beforeRender: function () {},
 	afterRender: function () {},
-	render: function () {
+	requestAnimationFrame: function () {
 		if(this.isPaused) return;
 
 		var that = this;
@@ -51,8 +54,21 @@ Drawable.prototype = {
 		}
 
 		requestAnimationFrame(function () {
-			that.render();
+			that.requestAnimationFrame();
 		});
+
+		this.afterRender();
+	},
+	render: function () {
+		var that = this;
+
+		this.beforeRender();
+
+		if(this.isTiling) {
+			this.renderTiling();
+		} else {
+			this.renderImage();
+		}
 
 		this.afterRender();
 	},
@@ -183,7 +199,11 @@ Drawable.prototype = {
 
 			that.setWidth(width || that.width);
 			that.setHeight(height || that.height);
+			that.imageLoadCallback();
 		};
+	},
+	imageLoadCallback: function () {
+
 	}
 };
 

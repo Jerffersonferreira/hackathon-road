@@ -34,6 +34,7 @@ Game.prototype = {
 		this.road = new Road(this.context, true);
 		this.road.setWidth(this.width);
 		this.road.setHeight(this.height);
+		this.road.reset();
 		this.road.play();
 	},
 	run: function (event) {
