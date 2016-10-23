@@ -26,7 +26,7 @@ function less(env) {
 		throw new Error("Env must be a string");
 	}
 
-	if(env === "DEV") {
+	if(env.toUpperCase() === "DEV") {
 		sourceMap = true;
 	}
 

@@ -1,7 +1,6 @@
-var requestAnimationFrame = require("../util/request-animation-frame");
+var renderer = require("../util/request-animation-frame");
 
-function Drawable(context) {
-	this.context = context;
+function Drawable() {
 	this.x = 0;
 	this.y = 0;
 	this.width = 0;
@@ -10,42 +9,52 @@ function Drawable(context) {
 	this.imageY = 0;
 	this.imageWidth = 0;
 	this.imageHeight = 0;
-	this.tilling = false;
+	this.isTiling = false;
 	this.image = null;
-	this.isAbleToRender = true;
-
-	this.draw();
+	this.super = this;
 }
 
-/*
-	@TODO: método para setar image x e y. motivo: limitar estes ao no máximo a largura e altura.
-	@TODO: trocar a propriedade tilling por método. motivo: resetar a largura e alura para original.
-*/
-
 Drawable.prototype = {
-	draw: function () {
+	beforeRender: function () {},
+	render: function () {
 		var that = this;
 
-		if(this.tilling) {
-			this.drawTilling();
+		this.beforeRender();
+
+		if(this.isTiling) {
+			this.renderTiling();
 		} else {
-			this.drawImage();
+			this.renderImage();
 		}
 
 		requestAnimationFrame(function () {
-			that.draw();
+			that.render();
 		});
 	},
-	isReadyToDraw: function () {
-		return this.isAbleToRender && this.image && this.image.width;
+	setImageX: function (x) {
+		if(x >= 0 && x < this.imageWidth) {
+			this.imageX = x;
+		} else {
+			this.imageX = 1;
+		}
 	},
-	drawImage: function () {
+	setImageY: function (y) {
+		if(y >= 0 && y < this.imageHeight) {
+			this.imageY = y;
+		} else {
+			this.imageY = 1;
+		}
+	},
+	isReadyToDraw: function () {
+		return this.image && this.image.width;
+	},
+	renderImage: function () {
 		if(this.isReadyToDraw()) {
 			this.context.drawImage(this.image, this.imageX, this.imageY, this.imageWidth, this.imageHeight, this.x, this.y, this.imageWidth, this.imageHeight);
 
 		}
 	},
-	drawTilling: function () {
+	renderTiling: function () {
 		if(this.isReadyToDraw()) {
 			var that = this,
 				iX, // iterator X
@@ -66,10 +75,6 @@ Drawable.prototype = {
 			if(this.imageWidth > this.width || this.imageHeight > this.height) {
 				return;
 			}
-
-			this.isAbleToRender = false;
-
-			this.context.clearRect(0, 0, 320, 500);
 
 			countX = Math.ceil(this.width / this.imageWidth) + 1;
 			countY = Math.ceil(this.height / this.imageHeight) + 1;

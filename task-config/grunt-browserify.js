@@ -32,7 +32,7 @@ function browserify(env) {
 		throw new Error("Env must be a string");
 	}
 
-	if(env === "DEV") {
+	if(env.toUpperCase() === "DEV") {
 		debug = true;
 		sourceMap = true;
 	}

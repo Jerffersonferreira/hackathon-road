@@ -1,25 +1,32 @@
-var requestAnimationFrame = require("./util/request-animation-frame"),
+var requestAnimationFrame = require("../util/request-animation-frame"),
 	Drawable = require("./drawable");
 
-function Road(context) {
+function Road(context, isTiling) {
+	var that = this;
+
 	this.objectList = [];
 	this.x = 0;
 	this.y = 0;
-	this.width = 320;
-	this.height = 658;
 
 	this.context = context;
-	this.draw();
+	this.isTiling = isTiling;
+	this.setImage("http://192.168.25.176:7000/img/bricks-2.jpg");
+
+	this.render();
 }
 
-Road.prototype = {
-	addObject: function (object) {
-		if(!(object instanceof Drawable)) throw new Error("Object must be a Drawable object");
-		this.objectList.push(object);
-	},
-	draw: function () {
+Road.prototype = new Drawable();
 
-	}
+Road.prototype.beforeRender = function () {
+	this.setImageY(this.imageY + 1);
+};
+
+Road.prototype.addObject = function (object) {
+	if(!(object instanceof Drawable)) throw new Error("Object must be a Drawable object");
+	this.objectList.push(object);
+};
+
+Road.prototype.advance = function () {
 
 };
 

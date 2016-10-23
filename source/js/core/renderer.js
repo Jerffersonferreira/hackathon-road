@@ -4,9 +4,11 @@ var requestAnimationFrame = require("../util/request-animation-frame"),
 
 function Renderer() {
 	var that = this;
-	this.frameRate = 24;
+	this.frameRate = 60;
 	this.accumulator = 0;
 	this.callbaks = [];
+	this.isReadyToExecuteQueue = true;
+	this.accumulatorLimit = Math.ceil(60 / this.frameRate);
 
 	function requestedFrame() {
 		requestAnimationFrame(function () {
@@ -25,14 +27,22 @@ Renderer.prototype = {
 		this.callbaks.push(callback);
 	},
 	executeQueue: function () {
-		if(!this.isFrameRateReached()) return;
-		this.callbaks.forEach(function (callback) {
+		var queue;
+		if(!this.isFrameRateReached() && !this.isReadyToExecuteQueue) return;
+		this.isReadyToExecuteQueue = false;
+
+		queue = this.callbaks;
+		this.callbaks = [];
+		queue.forEach(function (callback) {
 			callback();
 		});
+
+		this.isReadyToExecuteQueue = false;
+
 		this.accumulator = 0;
 	},
 	isFrameRateReached: function () {
-		return this.accumulator > 60 / this.frameRate;
+		return this.accumulator > this.accumulatorLimit;
 	}
 };
 
