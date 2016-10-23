@@ -4,6 +4,7 @@ var requestAnimationFrame = require("../util/request-animation-frame"),
 function Road(context, isTiling) {
 	var that = this;
 
+	this.char = null;
 	this.objectList = [];
 	this.x = 0;
 	this.y = 0;
@@ -19,15 +20,26 @@ Road.prototype = new Drawable();
 
 Road.prototype.beforeRender = function () {
 	this.setImageY(this.imageY + 1);
+
+	if(this.char) {
+		this.char.walk();
+	}
 };
 
 Road.prototype.addObject = function (object) {
-	if(!(object instanceof Drawable)) throw new Error("Object must be a Drawable object");
+	if(!(object instanceof Drawable)) throw new Error("object must be a Drawable object");
 	this.objectList.push(object);
 };
 
 Road.prototype.advance = function () {
 
+};
+
+Road.prototype.addChar = function (char) {
+	if(!(char instanceof Drawable)) throw new Error("char must be a Drawable object");
+	this.char = char;
+	this.char.y = this.height - this.char.height;
+	this.char.setWidthKnownArea(this.width);
 };
 
 module.exports = Road;

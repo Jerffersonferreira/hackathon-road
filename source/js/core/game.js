@@ -1,13 +1,12 @@
 var instance,
 	requestAnimationFrame = require("../util/request-animation-frame"),
 	Drawable = require("../core/drawable"),
-	Road = require("../core/road");
+	Road = require("../core/road"),
+	Char = require("../core/char");
 
 function Game() {
 	this.started = false;
 	this.initialized = false;
-	this.width = Zepto(window).width();
-	this.height = Zepto(window).height();
 }
 
 var teste;
@@ -17,10 +16,19 @@ Game.prototype = {
 		if(this.initialized) return;
 		this.initialized = true;
 
+		this.width = wrapperElement.width();
+		this.height = wrapperElement.height();
+
 		this.createCanvasElem(wrapperElement);
+
 		this.addRoad();
+		this.addChar();
 		this.addTapEvent();
 
+	},
+	addChar: function () {
+		this.char = new Char(this.context);
+		this.road.addChar(this.char);
 	},
 	addRoad: function () {
 		this.road = new Road(this.context, true);
