@@ -32,7 +32,7 @@ Char.prototype.changeSpriteTile = function () {
 	this.imageX = this.spriteTile * this.width;
 };
 
-Char.prototype.stop = function () {
+Char.prototype.stopWalking = function () {
 	this.spriteTile = 0;
 	this.spriteDirection = 1;
 	this.changeSpriteTile();

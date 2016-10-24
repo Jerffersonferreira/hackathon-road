@@ -11,62 +11,52 @@ function Road(context, isTiling) {
 	this.objectList = [];
 	this.x = 0;
 	this.y = 0;
-	this.rollStep = 109; // bed height
+	this.rollStep = 80; // bed height
 	this.remainingRoll = 0;
 	this.context = context;
 	this.isTiling = isTiling;
+	this.countLeftGenObj = 0;
+	this.countRightGenObj = 0;
 	this.setImage(imageRepository.getImage("road"));
 }
 
 Road.prototype = new Drawable();
 
 Road.prototype.reset = function () {
-	var that = this;
+	var that = this,
+		object;
 
-	this.pause();
 	this.started = false;
-	this.rollStep = 109;
-	this.objectList = [];
+	this.rollStep = 80;
 	this.remainingRoll = 0;
+	this.countLeftGenObj = 0;
+	this.countRightGenObj = 0;
 	this.setImageY(0);
+
+	if(that.char) {
+		that.char.pause();
+		that.char.stopWalking();
+	}
 
 	that.objectList.forEach(function (object) {
 		object.pause();
 	});
+	this.objectList = [];
 
-	function render() {
-		var object;
+	this.pause();
+	this.render();
 
-		that.render();
-
-		if(that.char) {
-			that.char.pause();
-			if(!that.char.imageWidth) {
-				that.char.imageLoadCallback = function () {
-					that.char.render();
-					that.char.stop();
-					that.char.imageLoadCallback = function () {};
-				};
-			} else {
-				that.char.render();
-				that.char.stop();
-			}
-		}
-
-		while(that.isReadToAddObject()) {
-			object = that.getRandomObject();
-			that.addObject(object, object.side);
-		}
-
-		that.updateObjectList(0);
-		that.imageLoadCallback = function () {};
+	if(that.char) {
+		that.char.render();
 	}
 
-	if(!this.imageWidth) {
-		//this.imageLoadCallback = render;
-	} else {
-		//render();
+	while(that.isReadToAddObject()) {
+		object = that.getRandomObject();
+		object.pause();
+		that.addObject(object, object.side);
+		object.render();
 	}
+
 };
 
 Road.prototype.isReadToAddObject = function () {
@@ -104,7 +94,27 @@ Road.prototype.beforeRender = function () {
 Road.prototype.getRandomObject = function () {
 	var side;
 
-	side = Math.random() < 0.5 ? "left" : "right";
+	if(Math.random() < 0.5) {
+		side = "left";
+		this.countLeftGenObj += 1;
+		this.countRightGenObj = 0;
+	} else {
+		side = "right";
+		this.countLeftGenObj = 0;
+		this.countRightGenObj += 1;
+	}
+
+	if(this.countLeftGenObj === 3) {
+		side = "right";
+		this.countRightGenObj = 0;
+		this.countLeftGenObj = 0;
+	}
+
+	if(this.countRightGenObj === 3) {
+		side = "left";
+		this.countRightGenObj = 0;
+		this.countLeftGenObj = 0;
+	}
 
 	return new Bed(this.context, side);
 };
@@ -121,8 +131,8 @@ Road.prototype.afterRender = function () {
 		this.char.walk();
 	}
 
-	this.updateObjectList(step);
 	this.setImageY(this.imageY + step);
+	this.updateObjectList(step);
 
 	if(this.isReadToAddObject()) {
 		object = this.getRandomObject();

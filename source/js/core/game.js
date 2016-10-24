@@ -9,8 +9,6 @@ function Game() {
 	this.initialized = false;
 }
 
-var teste;
-
 Game.prototype = {
 	init: function (wrapperElement) {
 		if(this.initialized) return;
