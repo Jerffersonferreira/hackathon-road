@@ -1,12 +1,16 @@
 var instance,
 	requestAnimationFrame = require("../util/request-animation-frame"),
+	MobileDetect = require("mobile-detect"),
 	Drawable = require("../core/drawable"),
 	Road = require("../core/road"),
 	Char = require("../core/char");
 
 function Game() {
+	var mobileDetect = new MobileDetect(window.navigator.userAgent);
+
 	this.started = false;
 	this.initialized = false;
+	this.isMobile = mobileDetect.mobile() !== null;
 }
 
 Game.prototype = {
@@ -21,7 +25,7 @@ Game.prototype = {
 
 		this.addRoad();
 		this.addChar();
-		this.addTapEvent();
+		this.addControls();
 
 	},
 	addChar: function () {
@@ -35,21 +39,45 @@ Game.prototype = {
 		this.road.reset();
 		this.road.play();
 	},
-	run: function (event) {
+	tapEvent: function (event) {
 		var side;
+		side = event.x / window.innerWidth <= 0.5 ? "left" : "right";
 
 		this.road.roll();
-		side = event.x / this.width <= 0.5 ? "left" : "right";
 		this.char.goTo(side);
 	},
-	tapEvent: function (event) {
-		this.run(event);
+	keyDownEvent: function (event) {
+		var side;
+		if(event.repeat) {
+			return;
+		}
+
+		if(event.which === 37) {
+			side = "left";
+		} else if(event.which === 39) {
+			side = "right";
+		}
+
+		if(!side) {
+			return;
+		}
+
+		this.road.roll();
+		this.char.goTo(side);
 	},
-	addTapEvent: function () {
-		var that = this;
-		Zepto("body").on("click", function (event) {
-			that.tapEvent(event);
-		});
+	addControls: function () {
+		var that = this,
+			event;
+
+		if(this.isMobile) {
+			Zepto("body").on("click", function (event) {
+				that.tapEvent(event);
+			});
+		} else {
+			Zepto("body").on("keydown", function (event) {
+				that.keyDownEvent(event);
+			});
+		}
 	},
 	createCanvasElem: function (wrapperElement) {
 		wrapperElement.append(Zepto("<canvas id=\"gamecanvas\" width=\"" + this.width + "px\" height=\"" + this.height + "px\"></canvas>"));

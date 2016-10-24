@@ -36,7 +36,7 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks("grunt-contrib-less");
 	grunt.loadNpmTasks("grunt-contrib-watch");
 
-	grunt.registerTask("default", ["watch"]);
+	grunt.registerTask("default", ["connect:app","watch"]);
 
 	grunt.registerTask("css:dev", ["clean:css", "less:dev"]);
 	grunt.registerTask("images:dev", ["clean:img", "copy:img"]);
