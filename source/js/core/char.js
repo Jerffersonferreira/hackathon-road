@@ -14,6 +14,7 @@ function Char(context) {
 	this.y = 0;
 	this.isSpriteLocked = false;
 	this.accumulator = 0;
+	this.borderOffset = 0;
 
 	this.context = context;
 	this.setImage(imageRepository.getImage("char"), this.width);
@@ -57,11 +58,16 @@ Char.prototype.setWidthKnownArea = function (width) {
 	this.widthKnownArea = width;
 };
 
+Char.prototype.setBorderOffset = function (offset) {
+	this.borderOffset = offset;
+	this.x = offset;
+};
+
 Char.prototype.goTo = function (side) {
 	if(side === "left") {
-		this.x = 0;
+		this.x = this.borderOffset;
 	} else {
-		this.x = this.widthKnownArea - this.width;
+		this.x = this.widthKnownArea - this.width - this.borderOffset;
 	}
 };
 

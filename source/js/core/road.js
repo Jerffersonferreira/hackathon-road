@@ -174,6 +174,8 @@ Road.prototype.addChar = function (char) {
 	this.char = char;
 	this.char.y = this.height - this.char.height;
 	this.char.setWidthKnownArea(this.width);
+	this.char.setBorderOffset(this.imageX);
+	console.log(this.imageX);
 
 	if(this.started) {
 		this.char.play();
