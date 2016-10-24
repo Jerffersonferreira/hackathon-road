@@ -33,22 +33,9 @@ Road.prototype.reset = function () {
 	this.countRightGenObj = 0;
 	this.setImageY(0);
 
-	if(that.char) {
-		that.char.pause();
-		that.char.stopWalking();
-	}
+	this.pauseRolling();
 
-	that.objectList.forEach(function (object) {
-		object.pause();
-	});
 	this.objectList = [];
-
-	this.pause();
-	this.render();
-
-	if(that.char) {
-		that.char.render();
-	}
 
 	while(that.isReadToAddObject()) {
 		object = that.getRandomObject();
@@ -57,6 +44,28 @@ Road.prototype.reset = function () {
 		object.render();
 	}
 
+};
+
+Road.prototype.pauseRolling = function () {
+	if(this.char) {
+		this.char.pause();
+		this.char.stopWalking();
+	}
+
+	this.objectList.forEach(function (object) {
+		object.pause();
+	});
+
+	this.pause();
+	this.render();
+
+	this.objectList.forEach(function (object) {
+		object.render();
+	});
+
+	if(this.char) {
+		this.char.render();
+	}
 };
 
 Road.prototype.isReadToAddObject = function () {
@@ -119,10 +128,15 @@ Road.prototype.getRandomObject = function () {
 	return new Bed(this.context, side);
 };
 
+Road.prototype.onPause = function () {
+	this.pauseRolling();
+};
+
 Road.prototype.afterRender = function () {
 	if(this.isPaused) {
 		return;
 	}
+
 	var step = 3,
 		object;
 
@@ -131,7 +145,6 @@ Road.prototype.afterRender = function () {
 		this.char.walk();
 	}
 
-	this.setImageY(this.imageY + step);
 	this.updateObjectList(step);
 
 	if(this.isReadToAddObject()) {
@@ -175,7 +188,6 @@ Road.prototype.addChar = function (char) {
 	this.char.y = this.height - this.char.height;
 	this.char.setWidthKnownArea(this.width);
 	this.char.setBorderOffset(this.imageX);
-	console.log(this.imageX);
 
 	if(this.started) {
 		this.char.play();

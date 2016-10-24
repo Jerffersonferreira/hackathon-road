@@ -29,6 +29,10 @@ Drawable.prototype = {
 		if(this.isPaused) return;
 
 		this.isPaused = true;
+		this.onPause();
+	},
+	onPause: function () {
+
 	},
 	setWidth: function (width) {
 		var that = this;
