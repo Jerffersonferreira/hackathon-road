@@ -1,4 +1,5 @@
 var requestAnimationFrame = require("../util/request-animation-frame"),
+	imageRepository = require("../util/image-repository")(),
 	Drawable = require("./drawable"),
 	Bed = require("./bed"),
 	Char = require("./char");
@@ -14,7 +15,7 @@ function Road(context, isTiling) {
 	this.remainingRoll = 0;
 	this.context = context;
 	this.isTiling = isTiling;
-	this.setImage("https://jerffersonferreira.github.io/hackathon-road/img/bricks-2.jpg");
+	this.setImage(imageRepository.getImage("road"));
 }
 
 Road.prototype = new Drawable();

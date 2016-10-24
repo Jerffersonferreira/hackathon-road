@@ -187,23 +187,15 @@ Drawable.prototype = {
 			that.isAbleToRender = true;
 		}
 	},
-	setImage: function (imagePath, width, height) {
+	setImage: function (image, width, height) {
 		var that = this;
 
-		this.image = new Image();
-		this.image.src = imagePath;
+		this.image = image;
+		that.imageWidth = width || that.image.width;
+		that.imageHeight = height || that.image.height;
 
-		this.image.onload = function () {
-			that.imageWidth = width || that.image.width;
-			that.imageHeight = height || that.image.height;
-
-			that.setWidth(width || that.width);
-			that.setHeight(height || that.height);
-			that.imageLoadCallback();
-		};
-	},
-	imageLoadCallback: function () {
-
+		that.setWidth(width || that.width);
+		that.setHeight(height || that.height);
 	}
 };
 

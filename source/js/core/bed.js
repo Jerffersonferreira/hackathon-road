@@ -1,4 +1,5 @@
 var requestAnimationFrame = require("../util/request-animation-frame"),
+	imageRepository = require("../util/image-repository")(),
 	Drawable = require("./drawable");
 
 function Bed(context, side) {
@@ -16,7 +17,7 @@ function Bed(context, side) {
 	this.accumulator = 0;
 
 	this.context = context;
-	this.setImage("https://jerffersonferreira.github.io/hackathon-road/img/bed-" + this.side + ".png");
+	this.setImage(imageRepository.getImage("bed-" + this.side));
 }
 
 Bed.prototype = new Drawable();

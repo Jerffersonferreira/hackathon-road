@@ -1,4 +1,5 @@
 var requestAnimationFrame = require("../util/request-animation-frame"),
+	imageRepository = require("../util/image-repository")(),
 	Drawable = require("./drawable");
 
 function Char(context) {
@@ -15,7 +16,7 @@ function Char(context) {
 	this.accumulator = 0;
 
 	this.context = context;
-	this.setImage("https://jerffersonferreira.github.io/hackathon-road/img/char.png", this.width);
+	this.setImage(imageRepository.getImage("char"), this.width);
 }
 
 Char.prototype = new Drawable();
