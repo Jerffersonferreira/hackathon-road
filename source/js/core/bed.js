@@ -2,11 +2,12 @@ var requestAnimationFrame = require("../util/request-animation-frame"),
 	imageRepository = require("../util/image-repository")(),
 	Drawable = require("./drawable");
 
-function Bed(context, side) {
+function Bed(context) {
 	var that = this;
 
-	this.side = side || "left";
+	this.position = null;
 	this.widthKnownArea = 0;
+	this.borderOffset = 0;
 	this.spriteDirection = 1;
 	this.spriteTile = 0;
 	this.width = 161;
@@ -15,12 +16,22 @@ function Bed(context, side) {
 	this.y = 0;
 	this.isSpriteLocked = false;
 	this.accumulator = 0;
-
 	this.context = context;
-	this.setImage(imageRepository.getImage("bed-" + this.side));
+	this.paused = true;
 }
 
 Bed.prototype = new Drawable();
+
+Bed.prototype.setPosition = function (position) {
+	this.position = position;
+	if(position === "left") {
+		this.x = this.borderOffset;
+	} else {
+		this.x = this.widthKnownArea - this.width - this.borderOffset;
+	}
+
+	this.setImage(imageRepository.getImage("bed-" + position));
+};
 
 Bed.prototype.beforeRender = function () {
 	this.accumulator += 1;
@@ -35,6 +46,11 @@ Bed.prototype.changeSpriteTile = function () {
 
 Bed.prototype.setWidthKnownArea = function (width) {
 	this.widthKnownArea = width;
+};
+
+Bed.prototype.setBorderOffset = function (offset) {
+	this.borderOffset = offset;
+	this.x = offset;
 };
 
 module.exports = Bed;

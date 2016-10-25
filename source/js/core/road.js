@@ -19,6 +19,7 @@ function Road(context, isTiling) {
 	this.isTiling = isTiling;
 	this.countLeftGenObj = 0;
 	this.countRightGenObj = 0;
+	this.borderOffset = 100;
 	this.setImage(imageRepository.getImage("road"));
 }
 
@@ -41,7 +42,7 @@ Road.prototype.reset = function () {
 	while(that.isReadyToAddObject()) {
 		object = that.getRandomObject();
 		object.pause();
-		that.addObject(object, object.side);
+		that.addObject(object);
 		object.render();
 	}
 
@@ -96,31 +97,46 @@ Road.prototype.beforeRender = function () {
 };
 
 Road.prototype.getRandomObject = function () {
-	var side;
+	var object;
+
+	object = new Bed(this.context);
+
+	object.setWidthKnownArea(this.width);
+	object.setBorderOffset(this.imageX + this.borderOffset * 1.2);
+
+	return object;
+};
+
+Road.prototype.getObjectPosition = function() {
+	var objPosition;
 
 	if(Math.random() < 0.5) {
-		side = "left";
+		objPosition = "left";
+	} else {
+		objPosition = "right";
+	}
+
+	if(objPosition === "left") {
 		this.countLeftGenObj += 1;
 		this.countRightGenObj = 0;
 	} else {
-		side = "right";
 		this.countLeftGenObj = 0;
 		this.countRightGenObj += 1;
 	}
 
-	if(this.countLeftGenObj === 3) {
-		side = "right";
+	if(this.countLeftGenObj === 2) {
+		objPosition = "right";
 		this.countRightGenObj = 0;
 		this.countLeftGenObj = 0;
 	}
 
-	if(this.countRightGenObj === 3) {
-		side = "left";
+	if(this.countRightGenObj === 2) {
+		objPosition = "left";
 		this.countRightGenObj = 0;
 		this.countLeftGenObj = 0;
 	}
 
-	return new Bed(this.context, side);
+	return objPosition;
 };
 
 Road.prototype.onPause = function () {
@@ -166,24 +182,36 @@ Road.prototype.afterRender = function () {
 
 	if(this.isReadyToAddObject()) {
 		object = this.getRandomObject();
-		this.addObject(object, object.side);
+		this.addObject(object);
 	}
 
 	this.setImageY(this.imageY += step);
 	this.updateObjectList(step);
 };
 
-Road.prototype.addObject = function (object, side) {
-	if(!(object instanceof Drawable)) throw new Error("object must be a Drawable object");
+Road.prototype.getMultiplier = function(actualPosition) {
+	var multipier = Math.round(Math.random()) + 1;
 
-	if(side === "right") {
-		object.x = this.width - object.width - this.imageX;
-	} else {
-		object.x = this.imageX;
+	if(multipier === 1 && this.objectList.length && this.objectList[this.objectList.length - 1].position !== actualPosition)  {
+		return 2;
 	}
 
+	return multipier;
+};
+
+Road.prototype.addObject = function (object, objPos) {
+	if(!(object instanceof Drawable)) throw new Error("object must be a Drawable object");
+
+	var multiplier,
+	 	objPosition;
+
+	objPosition = objPos || this.getObjectPosition();
+	multiplier = this.getMultiplier(objPosition);
+
+	object.setPosition(objPosition);
+
 	if(this.objectList.length) {
-		object.y = this.objectList[this.objectList.length-1].y - this.rollStep * 2;
+		object.y = this.objectList[this.objectList.length-1].y - this.rollStep * multiplier;
 	} else {
 		object.y = this.rollStep * (this.objectList.length + 1); // queue
 		object.y *= -2; // direction
@@ -200,6 +228,7 @@ Road.prototype.setWidth = function (width) {
 
 	if(this.imageWidth === 0) return;
 	this.imageX = (this.width - this.imageWidth) / 2;
+
 };
 
 Road.prototype.setHeight = function (height) {
@@ -214,7 +243,7 @@ Road.prototype.addChar = function (char) {
 	this.char = char;
 	this.char.y = this.height - this.char.height;
 	this.char.setWidthKnownArea(this.width);
-	this.char.setBorderOffset(this.imageX);
+	this.char.setBorderOffset(this.imageX + this.borderOffset);
 
 	if(this.started) {
 		this.char.play();

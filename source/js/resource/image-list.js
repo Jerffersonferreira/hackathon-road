@@ -5,7 +5,7 @@ list = [{
 	url: "/img/char.png"
 }, {
 	id: "road",
-	url: "/img/bricks-2.jpg"
+	url: "/img/road.png"
 }, {
 	id: "bed-left",
 	url: "/img/bed-left.png"

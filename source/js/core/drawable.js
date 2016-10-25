@@ -117,7 +117,7 @@ Drawable.prototype = {
 				offsetTop,
 				offsetLeft;
 
-			if(this.imageWidth === 0 || this.imageHeight === 0 || this.imageWidth > this.width || this.imageHeight > this.height) {
+			if(this.imageWidth === 0 || this.imageHeight === 0) {
 				return;
 			}
 
