@@ -11,8 +11,10 @@ function Road(context, isTiling) {
 	this.objectList = [];
 	this.x = 0;
 	this.y = 0;
-	this.rollStep = 80; // bed height
+	this.rollStep = 170;
+	this.incrementStep = 24;
 	this.remainingRoll = 0;
+	this.nextRoll = null;
 	this.context = context;
 	this.isTiling = isTiling;
 	this.countLeftGenObj = 0;
@@ -27,7 +29,6 @@ Road.prototype.reset = function () {
 		object;
 
 	this.started = false;
-	this.rollStep = 80;
 	this.remainingRoll = 0;
 	this.countLeftGenObj = 0;
 	this.countRightGenObj = 0;
@@ -37,7 +38,7 @@ Road.prototype.reset = function () {
 
 	this.objectList = [];
 
-	while(that.isReadToAddObject()) {
+	while(that.isReadyToAddObject()) {
 		object = that.getRandomObject();
 		object.pause();
 		that.addObject(object, object.side);
@@ -68,7 +69,7 @@ Road.prototype.pauseRolling = function () {
 	}
 };
 
-Road.prototype.isReadToAddObject = function () {
+Road.prototype.isReadyToAddObject = function () {
 	return this.objectList.length <= Math.ceil(this.height / this.rollStep) / 3 + 3;
 };
 
@@ -78,18 +79,12 @@ Road.prototype.updateObjectList = function (step) {
 		object.y += step;
 
 		if(that.started) {
-			if(object.y >= object.height * -1 && object.y <= that.height) {
+			if(object.y >= object.height * -2 && object.y <= that.height) {
 				object.play();
 			} else if(object.y > that.height) {
 				object.pause();
 				that.objectList.splice(i, 1);
 			}
-		} else {
-			object.imageLoadCallback = function () {
-				object.render();
-				object.imageLoadCallback = function () {};
-			};
-
 		}
 	});
 };
@@ -137,20 +132,45 @@ Road.prototype.afterRender = function () {
 		return;
 	}
 
-	var step = 3,
+	var step,
 		object;
 
-	if(this.started && this.char) {
-		this.char.play();
-		this.char.walk();
+	if(this.remainingRoll <= 0) {
+		this.remainingRoll = 0;
+		step = 0;
+
+		if(this.nextRoll) {
+			this.nextRoll();
+		}
+	} else {
+		if(this.remainingRoll) {
+		}
+
+		if(this.remainingRoll - this.incrementStep < 0) {
+			step = this.remainingRoll;
+			this.remainingRoll = 0;
+		} else {
+			step = this.incrementStep;
+			this.remainingRoll -= step;
+		}
 	}
 
-	this.updateObjectList(step);
+	if(this.started && this.char) {
+		if(step === 0) {
+			this.char.stopWalking();
+		} else {
+			this.char.play();
+			this.char.walk();
+		}
+	}
 
-	if(this.isReadToAddObject()) {
+	if(this.isReadyToAddObject()) {
 		object = this.getRandomObject();
 		this.addObject(object, object.side);
 	}
+
+	this.setImageY(this.imageY += step);
+	this.updateObjectList(step);
 };
 
 Road.prototype.addObject = function (object, side) {
@@ -162,7 +182,14 @@ Road.prototype.addObject = function (object, side) {
 		object.x = this.imageX;
 	}
 
-	object.y = (this.objectList.length + 1) * this.rollStep * -3 + this.height;
+	if(this.objectList.length) {
+		object.y = this.objectList[this.objectList.length-1].y - this.rollStep * 2;
+	} else {
+		object.y = this.rollStep * (this.objectList.length + 1); // queue
+		object.y *= -2; // direction
+		object.y += this.height - this.rollStep; // considering screen height
+		object.y += this.rollStep; // first tile after char
+	}
 
 	this.objectList.push(object);
 };
@@ -192,21 +219,21 @@ Road.prototype.addChar = function (char) {
 	if(this.started) {
 		this.char.play();
 	} else {
-		if(!this.char.imageWidth) {
-			this.char.imageLoadCallback = function () {
-				that.char.render();
-				that.char.imageLoadCallback = function () {};
-			};
-		} else {
-			this.char.render();
-		}
+		this.char.render();
 	}
 };
 
-Road.prototype.roll = function () {
-	if(Math.floor(this.remainingRoll / this.rollStep) < 2) {
-		this.remainingRoll += this.rollStep;
+Road.prototype.roll = function (charPos) {
+	if(this.remainingRoll) {
 	}
+
+	this.nextRoll = function () {
+		this.remainingRoll += this.rollStep;
+		if(this.char) {
+			this.char.goTo(charPos);
+		}
+		this.nextRoll = null;
+	};
 };
 
 module.exports = Road;

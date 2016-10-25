@@ -16,3 +16,5 @@ interval = setInterval(function () {
 
 	clearInterval(interval);
 }, 200);
+
+window.game = game;

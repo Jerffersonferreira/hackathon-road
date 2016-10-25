@@ -40,37 +40,36 @@ Game.prototype = {
 		this.road.play();
 	},
 	tapEvent: function (event) {
-		var side;
-		side = event.x / window.innerWidth <= 0.5 ? "left" : "right";
+		var charPos;
 
-		this.road.roll();
-		this.char.goTo(side);
+		charPos = event.x / window.innerWidth <= 0.5 ? "left" : "right";
+
+		this.road.roll(charPos);
 	},
 	keyDownEvent: function (event) {
-		var side;
+		var charPos;
 		if(event.repeat) {
 			return;
 		}
 
 		if(event.which === 37) {
-			side = "left";
+			charPos = "left";
 		} else if(event.which === 39) {
-			side = "right";
+			charPos = "right";
 		}
 
-		if(!side) {
+		if(!charPos) {
 			return;
 		}
 
-		this.road.roll();
-		this.char.goTo(side);
+		this.road.roll(charPos);
 	},
 	addControls: function () {
 		var that = this,
 			event;
 
 		if(this.isMobile) {
-			Zepto("body").on("click", function (event) {
+			Zepto(window).on("click", function (event) {
 				that.tapEvent(event);
 			});
 		} else {

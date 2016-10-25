@@ -24,7 +24,7 @@ Char.prototype = new Drawable();
 
 Char.prototype.beforeRender = function () {
 	this.accumulator += 1;
-	if(this.accumulator < 10) return;
+	if(this.accumulator < 2) return;
 	this.isSpriteLocked = false;
 	this.accumulator = 0;
 };
