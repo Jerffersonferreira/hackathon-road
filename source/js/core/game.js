@@ -40,29 +40,29 @@ Game.prototype = {
 		this.road.play();
 	},
 	tapEvent: function (event) {
-		var charPos;
+		var charPosition;
 
-		charPos = event.x / window.innerWidth <= 0.5 ? "left" : "right";
+		charPosition = event.x / window.innerWidth <= 0.5 ? "left" : "right";
 
-		this.road.roll(charPos);
+		this.road.scrollDown(charPosition);
 	},
 	keyDownEvent: function (event) {
-		var charPos;
+		var charPosition;
 		if(event.repeat) {
 			return;
 		}
 
 		if(event.which === 37) {
-			charPos = "left";
+			charPosition = "left";
 		} else if(event.which === 39) {
-			charPos = "right";
+			charPosition = "right";
 		}
 
-		if(!charPos) {
+		if(!charPosition) {
 			return;
 		}
 
-		this.road.roll(charPos);
+		this.road.scrollDown(charPosition);
 	},
 	addControls: function () {
 		var that = this,

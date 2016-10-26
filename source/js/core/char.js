@@ -63,8 +63,9 @@ Char.prototype.setBorderOffset = function (offset) {
 	this.x = offset;
 };
 
-Char.prototype.goTo = function (side) {
-	if(side === "left") {
+Char.prototype.goTo = function (position) {
+	this.position = position;
+	if(position === "left") {
 		this.x = this.borderOffset;
 	} else {
 		this.x = this.widthKnownArea - this.width - this.borderOffset;

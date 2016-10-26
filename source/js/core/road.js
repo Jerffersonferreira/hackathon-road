@@ -11,15 +11,16 @@ function Road(context, isTiling) {
 	this.objectList = [];
 	this.x = 0;
 	this.y = 0;
-	this.rollStep = 170;
+	this.scrollDownStep = 170;
 	this.incrementStep = 24;
-	this.remainingRoll = 0;
-	this.nextRoll = null;
+	this.remainingScrollDown = 0;
+	this.nextScrollDown = null;
 	this.context = context;
 	this.isTiling = isTiling;
 	this.countLeftGenObj = 0;
 	this.countRightGenObj = 0;
 	this.borderOffset = 100;
+	this.bumpedObject = null;
 	this.setImage(imageRepository.getImage("road"));
 }
 
@@ -30,9 +31,10 @@ Road.prototype.reset = function () {
 		object;
 
 	this.started = false;
-	this.remainingRoll = 0;
+	this.remainingScrollDown = 0;
 	this.countLeftGenObj = 0;
 	this.countRightGenObj = 0;
+	this.bumpedObject = null;
 	this.setImageY(0);
 
 	this.pauseRolling();
@@ -71,7 +73,7 @@ Road.prototype.pauseRolling = function () {
 };
 
 Road.prototype.isReadyToAddObject = function () {
-	return this.objectList.length <= Math.ceil(this.height / this.rollStep) / 3 + 3;
+	return this.objectList.length <= Math.ceil(this.height / this.scrollDownStep) / 3 + 3;
 };
 
 Road.prototype.updateObjectList = function (step) {
@@ -80,9 +82,9 @@ Road.prototype.updateObjectList = function (step) {
 		object.y += step;
 
 		if(that.started) {
-			if(object.y >= object.height * -2 && object.y <= that.height) {
+			if(object.y >= object.height * -2 && object.y < that.height) {
 				object.play();
-			} else if(object.y > that.height) {
+			} else if(object.y >= that.height) {
 				object.pause();
 				that.objectList.splice(i, 1);
 			}
@@ -103,7 +105,7 @@ Road.prototype.getRandomObject = function () {
 
 	object.setWidthKnownArea(this.width);
 	object.setBorderOffset(this.imageX + this.borderOffset * 1.2);
-
+	object.id = Math.round(Math.random() * 100);
 	return object;
 };
 
@@ -151,29 +153,35 @@ Road.prototype.afterRender = function () {
 	var step,
 		object;
 
-	if(this.remainingRoll <= 0) {
-		this.remainingRoll = 0;
+	if(this.remainingScrollDown <= 0) {
+		this.remainingScrollDown = 0;
 		step = 0;
 
-		if(this.nextRoll) {
-			this.nextRoll();
-		}
-	} else {
-		if(this.remainingRoll) {
+		if(this.nextScrollDown && !this.bumpedObject) {
+			this.nextScrollDown();
 		}
 
-		if(this.remainingRoll - this.incrementStep < 0) {
-			step = this.remainingRoll;
-			this.remainingRoll = 0;
+	} else {
+		if(this.remainingScrollDown) {
+		}
+
+		if(this.remainingScrollDown - this.incrementStep < 0) {
+			step = this.remainingScrollDown;
+			this.remainingScrollDown = 0;
 		} else {
 			step = this.incrementStep;
-			this.remainingRoll -= step;
+			this.remainingScrollDown -= step;
 		}
 	}
 
 	if(this.started && this.char) {
 		if(step === 0) {
 			this.char.stopWalking();
+			if(this.bumpedObject) {
+				this.pause();
+				this.bumpedObject = null;
+				return;
+			}
 		} else {
 			this.char.play();
 			this.char.walk();
@@ -187,6 +195,26 @@ Road.prototype.afterRender = function () {
 
 	this.setImageY(this.imageY += step);
 	this.updateObjectList(step);
+	this.setBumpedObject(true);
+};
+
+Road.prototype.setBumpedObject = function (isAdvancing) {
+	var object,
+		objectReachedChar,
+		areBothInSameSide;
+
+	if(this.char && this.objectList.length) {
+		object = this.objectList[0];
+		objectReachedChar = object.y + object.height/2 > this.char.y;
+		areBothInSameSide = this.char.position === object.position;
+
+		if(!isAdvancing && areBothInSameSide && objectReachedChar) {
+			this.bumpedObject = object;
+			return;
+		}else if(isAdvancing && areBothInSameSide && objectReachedChar) {
+			this.bumpedObject = object;
+		}
+	}
 };
 
 Road.prototype.getMultiplier = function(actualPosition) {
@@ -211,12 +239,12 @@ Road.prototype.addObject = function (object, objPos) {
 	object.setPosition(objPosition);
 
 	if(this.objectList.length) {
-		object.y = this.objectList[this.objectList.length-1].y - this.rollStep * multiplier;
+		object.y = this.objectList[this.objectList.length-1].y - this.scrollDownStep * multiplier;
 	} else {
-		object.y = this.rollStep * (this.objectList.length + 1); // queue
+		object.y = this.scrollDownStep * (this.objectList.length + 1); // queue
 		object.y *= -2; // direction
-		object.y += this.height - this.rollStep; // considering screen height
-		object.y += this.rollStep; // first tile after char
+		object.y += this.height - this.scrollDownStep; // considering screen height
+		object.y += this.scrollDownStep; // first tile after char
 	}
 
 	this.objectList.push(object);
@@ -252,16 +280,21 @@ Road.prototype.addChar = function (char) {
 	}
 };
 
-Road.prototype.roll = function (charPos) {
-	if(this.remainingRoll) {
+Road.prototype.scrollDown = function (charPosition) {
+	if(this.remainingScrollDown) {
 	}
 
-	this.nextRoll = function () {
-		this.remainingRoll += this.rollStep;
+	this.nextScrollDown = function () {
 		if(this.char) {
-			this.char.goTo(charPos);
+			this.char.goTo(charPosition);
 		}
-		this.nextRoll = null;
+
+		this.setBumpedObject(false);
+		if(this.bumpedObject) {
+			return;
+		}
+		this.remainingScrollDown += this.scrollDownStep;
+		this.nextScrollDown = null;
 	};
 };
 
