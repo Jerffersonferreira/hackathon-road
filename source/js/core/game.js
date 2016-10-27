@@ -2,7 +2,7 @@ var instance,
 	requestAnimationFrame = require("../util/request-animation-frame"),
 	MobileDetect = require("mobile-detect"),
 	Drawable = require("../core/drawable"),
-	Road = require("../core/road"),
+	Scene = require("../core/scene"),
 	Char = require("../core/char");
 
 function Game() {
@@ -23,28 +23,28 @@ Game.prototype = {
 
 		this.createCanvasElem(wrapperElement);
 
-		this.addRoad();
+		this.addScene();
 		this.addChar();
 		this.addControls();
 
 	},
 	addChar: function () {
 		this.char = new Char(this.context);
-		this.road.addChar(this.char);
+		this.scene.addChar(this.char);
 	},
-	addRoad: function () {
-		this.road = new Road(this.context, true);
-		this.road.setWidth(this.width);
-		this.road.setHeight(this.height);
-		this.road.reset();
-		this.road.play();
+	addScene: function () {
+		this.scene = new Scene(this.context, true);
+		this.scene.setWidth(this.width);
+		this.scene.setHeight(this.height);
+		this.scene.reset();
+		this.scene.play();
 	},
 	tapEvent: function (event) {
 		var charPosition;
 
 		charPosition = event.x / window.innerWidth <= 0.5 ? "left" : "right";
 
-		this.road.scrollDown(charPosition);
+		this.scene.scrollDown(charPosition);
 	},
 	keyDownEvent: function (event) {
 		var charPosition;
@@ -62,7 +62,7 @@ Game.prototype = {
 			return;
 		}
 
-		this.road.scrollDown(charPosition);
+		this.scene.scrollDown(charPosition);
 	},
 	addControls: function () {
 		var that = this,

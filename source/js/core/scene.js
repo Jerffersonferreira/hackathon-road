@@ -4,7 +4,7 @@ var requestAnimationFrame = require("../util/request-animation-frame"),
 	Bed = require("./bed"),
 	Char = require("./char");
 
-function Road(context, isTiling) {
+function Scene(context, isTiling) {
 	var that = this;
 
 	this.char = null;
@@ -24,9 +24,9 @@ function Road(context, isTiling) {
 	this.setImage(imageRepository.getImage("road"));
 }
 
-Road.prototype = new Drawable();
+Scene.prototype = new Drawable();
 
-Road.prototype.reset = function () {
+Scene.prototype.reset = function () {
 	var that = this,
 		object;
 
@@ -50,7 +50,7 @@ Road.prototype.reset = function () {
 
 };
 
-Road.prototype.pauseRolling = function () {
+Scene.prototype.pauseRolling = function () {
 	if(this.char) {
 		this.char.pause();
 		this.char.stopWalking();
@@ -72,11 +72,11 @@ Road.prototype.pauseRolling = function () {
 	}
 };
 
-Road.prototype.isReadyToAddObject = function () {
+Scene.prototype.isReadyToAddObject = function () {
 	return this.objectList.length <= Math.ceil(this.height / this.scrollDownStep) / 3 + 3;
 };
 
-Road.prototype.updateObjectList = function (step) {
+Scene.prototype.updateObjectList = function (step) {
 	var that = this;
 	this.objectList.slice(0).forEach(function (object, i) {
 		object.y += step;
@@ -92,13 +92,13 @@ Road.prototype.updateObjectList = function (step) {
 	});
 };
 
-Road.prototype.beforeRender = function () {
+Scene.prototype.beforeRender = function () {
 	if(this.isPaused) {
 		return;
 	}
 };
 
-Road.prototype.getRandomObject = function () {
+Scene.prototype.getRandomObject = function () {
 	var object;
 
 	object = new Bed(this.context);
@@ -109,7 +109,7 @@ Road.prototype.getRandomObject = function () {
 	return object;
 };
 
-Road.prototype.getObjectPosition = function() {
+Scene.prototype.getObjectPosition = function() {
 	var objPosition;
 
 	if(Math.random() < 0.5) {
@@ -141,11 +141,11 @@ Road.prototype.getObjectPosition = function() {
 	return objPosition;
 };
 
-Road.prototype.onPause = function () {
+Scene.prototype.onPause = function () {
 	this.pauseRolling();
 };
 
-Road.prototype.afterRender = function () {
+Scene.prototype.afterRender = function () {
 	if(this.isPaused) {
 		return;
 	}
@@ -198,7 +198,7 @@ Road.prototype.afterRender = function () {
 	this.setBumpedObject(true);
 };
 
-Road.prototype.setBumpedObject = function (isAdvancing) {
+Scene.prototype.setBumpedObject = function (isAdvancing) {
 	var object,
 		objectReachedChar,
 		areBothInSameSide;
@@ -217,7 +217,7 @@ Road.prototype.setBumpedObject = function (isAdvancing) {
 	}
 };
 
-Road.prototype.getMultiplier = function(actualPosition) {
+Scene.prototype.getMultiplier = function(actualPosition) {
 	var multipier = Math.round(Math.random()) + 1;
 
 	if(multipier === 1 && this.objectList.length && this.objectList[this.objectList.length - 1].position !== actualPosition)  {
@@ -227,7 +227,7 @@ Road.prototype.getMultiplier = function(actualPosition) {
 	return multipier;
 };
 
-Road.prototype.addObject = function (object, objPos) {
+Scene.prototype.addObject = function (object, objPos) {
 	if(!(object instanceof Drawable)) throw new Error("object must be a Drawable object");
 
 	var multiplier,
@@ -250,7 +250,7 @@ Road.prototype.addObject = function (object, objPos) {
 	this.objectList.push(object);
 };
 
-Road.prototype.setWidth = function (width) {
+Scene.prototype.setWidth = function (width) {
 	var that = this;
 	this.width = width;
 
@@ -259,12 +259,12 @@ Road.prototype.setWidth = function (width) {
 
 };
 
-Road.prototype.setHeight = function (height) {
+Scene.prototype.setHeight = function (height) {
 	var that = this;
 	this.height = height;
 };
 
-Road.prototype.addChar = function (char) {
+Scene.prototype.addChar = function (char) {
 	if(!(char instanceof Drawable)) throw new Error("char must be a Drawable object");
 	var that = this;
 
@@ -280,7 +280,7 @@ Road.prototype.addChar = function (char) {
 	}
 };
 
-Road.prototype.scrollDown = function (charPosition) {
+Scene.prototype.scrollDown = function (charPosition) {
 	if(this.remainingScrollDown) {
 	}
 
@@ -298,4 +298,4 @@ Road.prototype.scrollDown = function (charPosition) {
 	};
 };
 
-module.exports = Road;
+module.exports = Scene;
