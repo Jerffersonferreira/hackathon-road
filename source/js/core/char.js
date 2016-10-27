@@ -15,6 +15,7 @@ function Char(context) {
 	this.isSpriteLocked = false;
 	this.accumulator = 0;
 	this.borderOffset = 0;
+	this.isHide = 0;
 
 	this.context = context;
 	this.setImage(imageRepository.getImage("char"), this.width);
@@ -23,6 +24,10 @@ function Char(context) {
 Char.prototype = new Drawable();
 
 Char.prototype.beforeRender = function () {
+	if(this.isHide) {
+		this.accumulator = 0;
+		this.imageX = this.width * - 1;
+	}
 	this.accumulator += 1;
 	if(this.accumulator < 2) return;
 	this.isSpriteLocked = false;

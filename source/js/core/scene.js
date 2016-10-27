@@ -37,7 +37,7 @@ Scene.prototype.reset = function () {
 	this.bumpedObject = null;
 	this.setImageY(0);
 
-	this.pauseRolling();
+	this.pauseScrollDown();
 
 	this.objectList = [];
 
@@ -50,7 +50,7 @@ Scene.prototype.reset = function () {
 
 };
 
-Scene.prototype.pauseRolling = function () {
+Scene.prototype.pauseScrollDown = function () {
 	if(this.char) {
 		this.char.pause();
 		this.char.stopWalking();
@@ -142,7 +142,7 @@ Scene.prototype.getObjectPosition = function() {
 };
 
 Scene.prototype.onPause = function () {
-	this.pauseRolling();
+	this.pauseScrollDown();
 };
 
 Scene.prototype.afterRender = function () {
@@ -178,8 +178,8 @@ Scene.prototype.afterRender = function () {
 		if(step === 0) {
 			this.char.stopWalking();
 			if(this.bumpedObject) {
-				this.pause();
-				this.bumpedObject = null;
+				this.bumpedObject.bump();
+				this.char.isHide = true;
 				return;
 			}
 		} else {

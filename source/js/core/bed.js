@@ -11,13 +11,12 @@ function Bed(context) {
 	this.spriteDirection = 1;
 	this.spriteTile = 0;
 	this.width = 161;
-	this.height = 109;
+	this.height = 170;
 	this.x = 0;
 	this.y = 0;
-	this.isSpriteLocked = false;
 	this.accumulator = 0;
 	this.context = context;
-	this.paused = true;
+	this.wasBumped = false;
 }
 
 Bed.prototype = new Drawable();
@@ -30,18 +29,38 @@ Bed.prototype.setPosition = function (position) {
 		this.x = this.widthKnownArea - this.width - this.borderOffset;
 	}
 
-	this.setImage(imageRepository.getImage("bed-" + position));
+	this.setImage(imageRepository.getImage("bed-" + position), this.width);
 };
 
 Bed.prototype.beforeRender = function () {
+	if(!this.wasBumped) {
+		this.accumulator = 0;
+		this.spriteTile = 0;
+		return;
+	}
 	this.accumulator += 1;
-	if(this.accumulator < 10) return;
-	this.isSpriteLocked = false;
+	if(this.accumulator < 25) return;
 	this.accumulator = 0;
+
+	this.spriteTile += this.spriteDirection;
+
+	if(this.spriteTile === 3) {
+		this.spriteDirection = -1;
+	} else if(this.spriteTile === 1) {
+		this.spriteDirection = 1;
+	}
+
+	this.changeSpriteTile();
 };
 
 Bed.prototype.changeSpriteTile = function () {
 	this.imageX = this.spriteTile * this.width;
+};
+
+Bed.prototype.bump = function () {
+	if(this.wasBumped) return;
+	this.accumulator = 25;
+	this.wasBumped = true;
 };
 
 Bed.prototype.setWidthKnownArea = function (width) {
