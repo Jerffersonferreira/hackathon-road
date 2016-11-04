@@ -11,6 +11,9 @@ function Game() {
 	this.started = false;
 	this.initialized = false;
 	this.isMobile = mobileDetect.mobile() !== null;
+	this.remainingTime = null;
+	this.earnPoints = null;
+	this.timeStep = null;
 }
 
 Game.prototype = {
@@ -24,20 +27,38 @@ Game.prototype = {
 		this.createCanvasElem(wrapperElement);
 
 		this.addScene();
+		this.reset();
 		this.addChar();
 		this.addControls();
-
+	},
+	reset: function() {
+		this.started = false;
+		this.earnPoints = 0;
+		this.remainingTime = 500;
+		this.timeStep = 1;
+		this.scene.reset();
+		this.scene.play();
+	},
+	gameOver: function() {
+		console.log("Game over!");
+	},
+	increaseRemainingTime: function() {
+		if(this.remainingTime >= 1000) return;
+		this.remainingTime += 14;
 	},
 	addChar: function () {
 		this.char = new Char(this.context);
 		this.scene.addChar(this.char);
 	},
 	addScene: function () {
+		var that = this;
 		this.scene = new Scene(this.context, true);
 		this.scene.setWidth(this.width);
 		this.scene.setHeight(this.height);
-		this.scene.reset();
-		this.scene.play();
+		this.scene.onScrollDown = function() {
+			that.earnPoints += 1;
+			that.increaseRemainingTime();
+		};
 	},
 	tapEvent: function (event) {
 		var charPosition;
@@ -91,10 +112,26 @@ Game.prototype = {
 		if(this.started) return;
 		this.started = true;
 
-		this.increment();
+		window.progressbar = Zepto("#progressbar");
+		var that = this;
+		setTimeout(function(){
+			that.increment();
+			console.log("começou");
+		}, 2000);
 	},
 	increment: function () {
 		var that = this;
+
+		if(this.remainingTime <= 0) {
+			this.gameOver();
+			//alert("Game over. Pontuação total: " + this.earnPoints);
+			return;
+		}
+
+		//console.log("remainingTime", this.remainingTime);
+
+		progressbar.css("width", this.remainingTime/1000 * 100 + "%");
+		this.remainingTime -= this.timeStep;
 
 		requestAnimationFrame(function () {
 			that.increment();

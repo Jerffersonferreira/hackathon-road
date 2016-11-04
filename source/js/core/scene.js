@@ -41,11 +41,17 @@ Scene.prototype.reset = function () {
 
 	this.objectList = [];
 
+	this.render();
+
 	while(that.isReadyToAddObject()) {
 		object = that.getRandomObject();
 		object.pause();
 		that.addObject(object);
 		object.render();
+	}
+
+	if(this.char) {
+		this.char.render();
 	}
 
 };
@@ -177,9 +183,18 @@ Scene.prototype.afterRender = function () {
 	if(this.started && this.char) {
 		if(step === 0) {
 			this.char.stopWalking();
-			if(this.bumpedObject) {
-				this.bumpedObject.bump();
+			if(this.bumpedObject && !this.bumpedObject.wasBumped) {
+				var that = this;
+				this.bumpedObject.setBump(true);
 				this.char.isHide = true;
+				this.nextScrollDown = null;
+				console.log("teste");
+				setTimeout(function(){
+					that.bumpedObject.setBump(false);
+					that.char.isHide = false;
+					that.char.goTo(that.char.position === "right" ? "left":"right");
+					that.bumpedObject = null;
+				}, 3000);
 				return;
 			}
 		} else {
@@ -281,8 +296,7 @@ Scene.prototype.addChar = function (char) {
 };
 
 Scene.prototype.scrollDown = function (charPosition) {
-	if(this.remainingScrollDown) {
-	}
+	if(this.bumpedObject) return;
 
 	this.nextScrollDown = function () {
 		if(this.char) {
@@ -294,8 +308,11 @@ Scene.prototype.scrollDown = function (charPosition) {
 			return;
 		}
 		this.remainingScrollDown += this.scrollDownStep;
+		this.onScrollDown();
 		this.nextScrollDown = null;
 	};
 };
+
+Scene.prototype.onScrollDown = function(){};
 
 module.exports = Scene;

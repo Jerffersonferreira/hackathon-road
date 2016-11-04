@@ -15,7 +15,7 @@ function Char(context) {
 	this.isSpriteLocked = false;
 	this.accumulator = 0;
 	this.borderOffset = 0;
-	this.isHide = 0;
+	this.isHide = false;
 
 	this.context = context;
 	this.setImage(imageRepository.getImage("char"), this.width);

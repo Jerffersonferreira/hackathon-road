@@ -34,8 +34,6 @@ Bed.prototype.setPosition = function (position) {
 
 Bed.prototype.beforeRender = function () {
 	if(!this.wasBumped) {
-		this.accumulator = 0;
-		this.spriteTile = 0;
 		return;
 	}
 	this.accumulator += 1;
@@ -57,10 +55,18 @@ Bed.prototype.changeSpriteTile = function () {
 	this.imageX = this.spriteTile * this.width;
 };
 
-Bed.prototype.bump = function () {
-	if(this.wasBumped) return;
-	this.accumulator = 25;
-	this.wasBumped = true;
+Bed.prototype.setBump = function (value) {
+	if(value === true){
+		if(this.wasBumped) return;
+		this.accumulator = 26;
+		this.spriteTile = 1;
+	} else {
+		this.accumulator = 0;
+		this.spriteTile = 0;
+		this.changeSpriteTile();
+	}
+
+	this.wasBumped = value;
 };
 
 Bed.prototype.setWidthKnownArea = function (width) {
