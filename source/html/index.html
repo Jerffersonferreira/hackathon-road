@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="app">
+<html lang="en" class="app js-app is-home">
 
 <head>
 	<!--html lang="en" Xmanifest="appcache.manifest" class="app"-->
@@ -8,6 +8,7 @@
 	<link rel="icon" sizes="192x192" href="img/icon.png">
 	<link rel="apple-touch-icon-precomposed" href="img/icon.png">
 	<link rel="stylesheet" href="css/main.css">
+	<link href="https://fonts.googleapis.com/css?family=Chewy" rel="stylesheet">
 	<!--link rel="manifest" href="manifest.json"-->
 
 	<meta charset="utf-8">
@@ -18,7 +19,6 @@
 	<meta name="msapplication-TileImage" content="img/icon.png">
 	<meta name="msapplication-TileColor" content="#FFFFFF">
 
-
 	<!--meta name="mobile-web-app-capable" content="yes"-->
 	<meta name="theme-color" content="#FFFFFF">
 
@@ -27,9 +27,57 @@
 	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 </head>
 
-<body class="app-body">
+<!-- this doc doesn't need to be semantic :D -->
+
+<body class="app-body js-body">
+	<div class="app-title">
+		<h1 class="logo">
+			Hackathon <span>Road</span>
+		</h1>
+	</div>
+	<div class="app-gameover_board">
+		<!-- gameover_board: -->
+		<div class="gameover_board">
+			<div class="gameover_board-title">
+				Game Over
+			</div>
+			<div class="gameover_board-score gameover_board-score--current">
+				score
+				<div class="gameover_board-score-value js-current-score">
+					1000
+				</div>
+			</div>
+			<div class="gameover_board-score gameover_board-score--best">
+				best
+				<div class="gameover_board-score-value js-best-score">
+					1923
+				</div>
+			</div>
+		</div>
+		<!-- :gameover_board -->
+	</div>
 	<div class="app-progressbar">
-		<div id="progressbar"></div>
+		<div class="progressbar">
+			<div class="progressbar-bar js-progressbar"></div>
+		</div>
+	</div>
+	<div class="app-gamescore js-gamescore">
+		0
+	</div>
+	<div class="app-playbutton">
+		<button class="brick brick--arrow_right js-playbutton"></button>
+	</div>
+	<div class="app-control_indicator">
+		<!-- control_indicator: -->
+		<div class="control_indicator">
+			<div class="control_indicator-left">
+				<div class="brick brick--arrow_left">Tap</div>
+			</div>
+			<div class="control_indicator-right">
+				<div class="brick brick--arrow_right">Tap</div>
+			</div>
+		</div>
+		<!-- :control_indicator -->
 	</div>
 	<script src="vendor/zepto.min.js"></script>
 	<script src="js/main.js"></script>
