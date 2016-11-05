@@ -11,15 +11,15 @@ function Scene(context, isTiling) {
 	this.objectList = [];
 	this.x = 0;
 	this.y = 0;
-	this.scrollDownStep = 170;
-	this.incrementStep = 24;
+	this.scrollDownStep = 340;
+	this.incrementStep = 48;
 	this.remainingScrollDown = 0;
 	this.nextScrollDown = null;
 	this.context = context;
 	this.isTiling = isTiling;
 	this.countLeftGenObj = 0;
 	this.countRightGenObj = 0;
-	this.borderOffset = 100;
+	this.borderOffset = 200;
 	this.bumpedObject = null;
 	this.setImage(imageRepository.getImage("road"));
 }
@@ -111,7 +111,6 @@ Scene.prototype.getRandomObject = function () {
 
 	object.setWidthKnownArea(this.width);
 	object.setBorderOffset(this.imageX + this.borderOffset * 1.2);
-	object.id = Math.round(Math.random() * 100);
 	return object;
 };
 

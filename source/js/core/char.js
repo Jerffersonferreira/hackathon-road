@@ -8,8 +8,8 @@ function Char(context) {
 	this.widthKnownArea = 0;
 	this.spriteDirection = 1;
 	this.spriteTile = 0;
-	this.width = 200;
-	this.height = 172;
+	this.width = 400;
+	this.height = 340;
 	this.x = 0;
 	this.y = 0;
 	this.isSpriteLocked = false;

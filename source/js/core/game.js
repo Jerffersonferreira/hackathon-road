@@ -21,8 +21,8 @@ Game.prototype = {
 		if(this.initialized) return;
 		this.initialized = true;
 
-		this.width = wrapperElement.width();
-		this.height = wrapperElement.height();
+		this.width = wrapperElement.width()*2;
+		this.height = wrapperElement.height()*2;
 
 		this.createCanvasElem(wrapperElement);
 
@@ -100,7 +100,7 @@ Game.prototype = {
 		}
 	},
 	createCanvasElem: function (wrapperElement) {
-		wrapperElement.append(Zepto("<canvas id=\"gamecanvas\" width=\"" + this.width + "px\" height=\"" + this.height + "px\"></canvas>"));
+		wrapperElement.append(Zepto("<canvas id=\"gamecanvas\" style=\"width:" + this.width/2 + "px; height:" + this.height/2 + "px\" width=\"" + this.width + "\" height=\"" + this.height + "\"></canvas>"));
 		this.canvasElement = document.getElementById("gamecanvas");
 
 		this.createContext();

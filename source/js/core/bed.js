@@ -10,8 +10,8 @@ function Bed(context) {
 	this.borderOffset = 0;
 	this.spriteDirection = 1;
 	this.spriteTile = 0;
-	this.width = 161;
-	this.height = 170;
+	this.width = 322;
+	this.height = 340;
 	this.x = 0;
 	this.y = 0;
 	this.accumulator = 0;
