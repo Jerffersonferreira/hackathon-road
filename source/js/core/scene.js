@@ -32,12 +32,13 @@ Scene.prototype.reset = function () {
 
 	this.started = false;
 	this.remainingScrollDown = 0;
+	this.nextScrollDown = null;
 	this.countLeftGenObj = 0;
 	this.countRightGenObj = 0;
 	this.bumpedObject = null;
 	this.setImageY(0);
 
-	this.pauseScrollDown();
+	this.pauseAndRenderAll();
 
 	this.objectList = [];
 
@@ -56,7 +57,13 @@ Scene.prototype.reset = function () {
 
 };
 
-Scene.prototype.pauseScrollDown = function () {
+Scene.prototype.onPlay = function () {
+	if(this.char) {
+		this.char.play();
+	}
+};
+
+Scene.prototype.pauseAndRenderAll = function () {
 	if(this.char) {
 		this.char.pause();
 		this.char.stopWalking();
@@ -96,12 +103,6 @@ Scene.prototype.updateObjectList = function (step) {
 			}
 		}
 	});
-};
-
-Scene.prototype.beforeRender = function () {
-	if(this.isPaused) {
-		return;
-	}
 };
 
 Scene.prototype.getRandomObject = function () {
@@ -147,7 +148,7 @@ Scene.prototype.getObjectPosition = function() {
 };
 
 Scene.prototype.onPause = function () {
-	this.pauseScrollDown();
+	this.pauseAndRenderAll();
 };
 
 Scene.prototype.afterRender = function () {
@@ -187,7 +188,7 @@ Scene.prototype.afterRender = function () {
 				this.bumpedObject.setBump(true);
 				this.char.isHide = true;
 				this.nextScrollDown = null;
-				console.log("teste");
+
 				setTimeout(function(){
 					that.bumpedObject.setBump(false);
 					that.char.isHide = false;

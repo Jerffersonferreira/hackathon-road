@@ -24,16 +24,16 @@ Drawable.prototype = {
 		this.started = true;
 
 		this.requestAnimationFrame();
+		this.onPlay();
 	},
+	onPlay: function () {},
 	pause: function () {
 		if(this.isPaused) return;
 
 		this.isPaused = true;
 		this.onPause();
 	},
-	onPause: function () {
-
-	},
+	onPause: function () {},
 	setWidth: function (width) {
 		var that = this;
 		this.width = width;

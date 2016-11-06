@@ -11,8 +11,7 @@ interval = setInterval(function () {
 	console.log("loading... " + imageRepository.totalLoadedImages + "/" + imageRepository.totalImages);
 	if(imageRepository.totalImages !== imageRepository.totalLoadedImages) return;
 
-	game.init(Zepto(".app-body"));
-	game.start();
+	game.init(Zepto(".js-app"));
 
 	clearInterval(interval);
 }, 200);

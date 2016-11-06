@@ -2,45 +2,65 @@ var instance,
 	requestAnimationFrame = require("../util/request-animation-frame"),
 	MobileDetect = require("mobile-detect"),
 	Drawable = require("../core/drawable"),
+	Screen = require("../core/screen"),
 	Scene = require("../core/scene"),
 	Char = require("../core/char");
 
 function Game() {
 	var mobileDetect = new MobileDetect(window.navigator.userAgent);
 
+	this.isGameOver = false;
 	this.started = false;
 	this.initialized = false;
 	this.isMobile = mobileDetect.mobile() !== null;
 	this.remainingTime = null;
-	this.earnPoints = null;
+	this.score = null;
+	this.bestScore = null;
 	this.timeStep = null;
+	this.screen = null;
+	this.scene = null;
 }
 
 Game.prototype = {
-	init: function (wrapperElement) {
+	init: function (app) {
+		var wrapperElement;
+
 		if(this.initialized) return;
 		this.initialized = true;
 
+		wrapperElement = app.find('.js-body');
+
+		this.app = app;
 		this.width = wrapperElement.width()*2;
 		this.height = wrapperElement.height()*2;
 
 		this.createCanvasElem(wrapperElement);
 
+		this.addScreen();
 		this.addScene();
-		this.reset();
 		this.addChar();
-		this.addControls();
+		this.reset();
 	},
 	reset: function() {
+		var that = this;
+
 		this.started = false;
-		this.earnPoints = 0;
+		this.isGameOver = false;
+		this.score = 0;
 		this.remainingTime = 500;
 		this.timeStep = 1;
 		this.scene.reset();
-		this.scene.play();
+
+		setTimeout(function(){
+			that.scene.play();
+		}, 100);
 	},
 	gameOver: function() {
-		console.log("Game over!");
+		this.isGameOver = true;
+		if(this.bestScore === null || this.score > this.bestScore) {
+			this.bestScore = this.score;
+		}
+		this.screen.gameOver(this.score, this.bestScore);
 	},
 	increaseRemainingTime: function() {
 		if(this.remainingTime >= 1000) return;
@@ -50,18 +70,45 @@ Game.prototype = {
 		this.char = new Char(this.context);
 		this.scene.addChar(this.char);
 	},
+	playButtonAction: function() {
+		if(this.started && !this.isGameOver) {
+			return;
+		} else if(this.isGameOver) {
+			this.reset();
+		} else {
+			this.addControls();
+		}
+
+		this.screen.ready();
+	},
+	addScreen: function() {
+		var that = this;
+		this.screen = new Screen(this.app, function() {
+			that.playButtonAction();
+		});
+	},
 	addScene: function () {
 		var that = this;
 		this.scene = new Scene(this.context, true);
 		this.scene.setWidth(this.width);
 		this.scene.setHeight(this.height);
 		this.scene.onScrollDown = function() {
-			that.earnPoints += 1;
+			that.score += 1;
 			that.increaseRemainingTime();
+			that.screen.updateScore(that.score);
 		};
+	},
+	beforeTapOrKeyDown: function() {
+		if(!this.isGameOver && !this.started) {
+			this.start();
+		}
 	},
 	tapEvent: function (event) {
 		var charPosition;
+
+		this.beforeTapOrKeyDown();
+
+		if(!this.started || this.isGameOver) return;
 
 		charPosition = event.x / window.innerWidth <= 0.5 ? "left" : "right";
 
@@ -69,9 +116,13 @@ Game.prototype = {
 	},
 	keyDownEvent: function (event) {
 		var charPosition;
-		if(event.repeat) {
-			return;
-		}
+
+		if(event.repeat) return;
+
+		this.beforeTapOrKeyDown();
+
+		if(!this.started || this.isGameOver) return;
+
 
 		if(event.which === 37) {
 			charPosition = "left";
@@ -111,27 +162,19 @@ Game.prototype = {
 	start: function () {
 		if(this.started) return;
 		this.started = true;
-
-		window.progressbar = Zepto("#progressbar");
-		var that = this;
-		setTimeout(function(){
-			that.increment();
-			console.log("começou");
-		}, 2000);
+		this.screen.playing();
+		this.increment();
 	},
 	increment: function () {
 		var that = this;
 
 		if(this.remainingTime <= 0) {
 			this.gameOver();
-			//alert("Game over. Pontuação total: " + this.earnPoints);
 			return;
 		}
 
-		//console.log("remainingTime", this.remainingTime);
-
-		progressbar.css("width", this.remainingTime/1000 * 100 + "%");
 		this.remainingTime -= this.timeStep;
+		this.screen.updateProgressBar(this.remainingTime/1000 * 100 + "%");
 
 		requestAnimationFrame(function () {
 			that.increment();
