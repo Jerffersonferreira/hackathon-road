@@ -22,7 +22,13 @@ function Screen(app, playButtonAction) {
 
 Screen.prototype = {
 	resetState: function() {
-		this.app.attr("class", this.app.attr("class").replace(/is-[^ ]+ ?/gi, ""));
+		var classNames = this.app.attr("class");
+
+		classNames = classNames.replace(/\s{2,}/g, " ");
+		classNames = classNames.replace(/^\s|is-[^\s]+\s?|\s$/gi, "");
+		classNames = classNames.replace(/^\s+|\s+$/g, "");
+
+		this.app.attr("class", classNames);
 	},
 	addState: function(state) {
 		this.app.addClass(this.gameStates[state]);
