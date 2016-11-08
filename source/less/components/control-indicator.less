@@ -1,13 +1,54 @@
-.control_indicator {
-	display: inline-block;
-	overflow: hidden;
-	width: 300px;
+.keyframes(~  'alternates, 0%{transform: translateX(-25%)} 100%{transform: translateX(25%)}');
+.keyframes(~  'pulse, 0%{transform: scale(0.9)} 100%{transform: scale(1.1)}');
 
-	&-left {
+.control_indicator {
+	// Attributes definition
+	overflow: hidden;
+	width: 260px;
+	padding: 50px;
+	display: none;
+
+	// Elements
+	&--mobile &-left {
+		.animation(800ms ease-in-out 0s infinite alternate-reverse both running alternates);
 		float: left;
 	}
 
-	&-right {
+	&--mobile &-right {
+		.animation(800ms ease-in-out 0s infinite alternate both running alternates);
 		float: right;
+	}
+
+	&--desktop &-up {
+		text-align: center;
+		padding-bottom: 8px;
+	}
+
+	&--desktop &-down,
+	&--desktop &-left,
+	&--desktop &-right {
+		position: relative;
+		display: inline-block;
+		z-index: 1;
+	}
+
+	&--desktop &-down {
+		z-index: 2;
+	}
+
+	&--desktop &-left {
+		.animation(600ms ease-in-out 0s infinite alternate both running pulse);
+		transform-origin: 100% 50%;
+	}
+
+	&--desktop &-right {
+		.animation(600ms ease-in-out -300ms infinite alternate both running pulse);
+		transform-origin: 0 50%;
+	}
+
+	// Modifiers
+	.is-desktop &--desktop,
+	.is-mobile &--mobile {
+		display: inline-block;
 	}
 }

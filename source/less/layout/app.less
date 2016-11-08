@@ -5,6 +5,11 @@
 	background-size: 8px 200px;
 	box-sizing: border-box;
 
+	canvas {
+		display: block;
+		margin: 0 auto;
+	}
+
 	&-body {
 		min-width: 320px;
 		max-width: 600px;
@@ -14,23 +19,12 @@
 	}
 
 	&-progressbar {
-		.transform(translateY(-60px));
-
-		margin-left: -100px;
-		width: 200px;
-		border-radius: 5px;
-		background-color: #444;
-		border: 10px solid black;
+		.transition(transform 200ms ease-in-out);
+		.transform(translateY(-100px));
 		position: absolute;
 		top: 20px;
-		left: 50%;
-
-		div {
-			width: 50%;
-			height: 20px;
-			background-color: gold;
-			border-radius: 3px;
-		}
+		text-align: center;
+		width: 100%;
 	}
 
 	&-title {
@@ -50,18 +44,19 @@
 
 		position: absolute;
 		width: 100%;
-		top: 30%;
+		top: 60px;
 		text-align: center;
 		opacity: 0;
 	}
 
 	&-gamescore {
+		.brown-title(#7f5e3b);
 		.transform(scale(0));
 		.transition(transform 200ms ease-in-out, opacity 200ms ease-in-out);
 
 		position: absolute;
 		width: 100%;
-		top: 10%;
+		top: 70px;
 		text-align: center;
 		font-family: @font-family;
 		font-size: 54px;
@@ -74,7 +69,7 @@
 
 		position: absolute;
 		width: 100%;
-		bottom: 10%;
+		bottom: 50px;
 		text-align: center;
 		opacity: 0;
 	}
@@ -85,7 +80,7 @@
 
 		position: absolute;
 		width: 100%;
-		bottom: 20px;
+		bottom: 0;
 		text-align: center;
 		opacity: 0;
 	}

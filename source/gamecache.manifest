@@ -1,0 +1,24 @@
+CACHE MANIFEST
+# Version 1.0
+
+CACHE:
+# HTML
+./index.html
+
+# CSS
+./css/main.css
+
+# JS
+./js/main.js
+./vendor/zepto.min.js
+
+# Images
+./img/bed-left.png
+./img/bed-right.png
+./img/char.png
+./img/icon-192x192.png
+./img/logo.png
+./img/road.png
+
+NETWORK:
+*

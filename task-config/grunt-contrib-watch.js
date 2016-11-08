@@ -28,6 +28,10 @@ function watch() {
 		vendor: {
 			files: config.path.vendor.source + "**/*",
 			tasks: ["vendor"]
+		},
+		misc: {
+			files: [config.path.source + "**/*.json", config.path.source + "**/*.manifest"],
+			tasks: ["misc"]
 		}
 	};
 }

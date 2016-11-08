@@ -115,18 +115,22 @@ Game.prototype = {
 		this.scene.scrollDown(charPosition);
 	},
 	keyDownEvent: function (event) {
-		var charPosition;
+		var charPosition,
+			keyCode;
 
 		if(event.repeat) return;
+
+		keyCode = event.which;
+
+		if(keyCode !== 37 && keyCode !== 39) return;
 
 		this.beforeTapOrKeyDown();
 
 		if(!this.started || this.isGameOver) return;
 
-
-		if(event.which === 37) {
+		if(keyCode === 37) {
 			charPosition = "left";
-		} else if(event.which === 39) {
+		} else if(keyCode === 39) {
 			charPosition = "right";
 		}
 
@@ -141,7 +145,7 @@ Game.prototype = {
 			event;
 
 		if(this.isMobile) {
-			Zepto(window).on("click", function (event) {
+			Zepto("body").on("click", function (event) {
 				that.tapEvent(event);
 			});
 		} else {

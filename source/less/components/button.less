@@ -1,0 +1,61 @@
+.button {
+	// Var definition
+	@main-color: #57891c;
+	@arrow-width: 20px;
+	@arrow-height: 30px;
+
+	// Mixins
+	.brick(@main-color);
+
+	// Attributes definition
+	background-color: white;
+	color: @main-color;
+	padding: 8px 12px;
+	font-family: @font-family;
+	font-size: 24px;
+	outline: 0;
+
+	// Modifiers
+	&--play {
+		padding: 15px 35px;
+	}
+
+	&--arrow_down:after,
+	&--arrow_left:before,
+	&--arrow_right:after,
+	&--arrow_up:after {
+		content: '';
+		vertical-align: middle;
+		display: inline-block;
+		width: 0;
+		height: 0;
+	}
+
+	&--arrow_down:after,
+	&--arrow_up:after {
+		border-left: @arrow-height/2 solid transparent;
+		border-right: @arrow-height/2 solid transparent;
+	}
+
+	&--arrow_left:before,
+	&--arrow_right:after {
+		border-top: @arrow-height/2 solid transparent;
+		border-bottom: @arrow-height/2 solid transparent;
+	}
+
+	&--arrow_up:after {
+		border-bottom: @arrow-width solid @main-color;
+	}
+
+	&--arrow_down:after {
+		border-top: @arrow-width solid @main-color;
+	}
+
+	&--arrow_left:before {
+		border-right: @arrow-width solid @main-color;
+	}
+
+	&--arrow_right:after {
+		border-left: @arrow-width solid @main-color;
+	}
+}

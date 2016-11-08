@@ -20,6 +20,12 @@ function copy() {
 			cwd: config.path.vendor.source,
 			src: "**",
 			dest: config.path.vendor.build
+		},
+		misc: {
+			expand: true,
+			cwd: config.path.source,
+			src: ["*.json", "*.manifest"],
+			dest: config.path.build
 		}
 	};
 }

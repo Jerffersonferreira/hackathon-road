@@ -182,6 +182,15 @@ Drawable.prototype = {
 
 					siHeight = dHeight;
 
+
+					if(siWidth === 0) {
+						siWidth = 1;
+					}
+
+					if(siHeight === 0) {
+						siHeight = 1;
+					}
+
 					this.context.drawImage(this.image, siX, siY, siWidth, siHeight, dX, dY, dWidth, dHeight);
 					iY += 1;
 				}
