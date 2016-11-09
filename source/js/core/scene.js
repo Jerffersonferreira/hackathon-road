@@ -116,7 +116,7 @@ Scene.prototype.getRandomObject = function () {
 	return object;
 };
 
-Scene.prototype.getObjectPosition = function() {
+Scene.prototype.genObjectPosition = function() {
 	var objPosition;
 
 	if(Math.random() < 0.5) {
@@ -249,7 +249,7 @@ Scene.prototype.addObject = function (object, objPos) {
 	var multiplier,
 	 	objPosition;
 
-	objPosition = objPos || this.getObjectPosition();
+	objPosition = objPos || this.genObjectPosition();
 	multiplier = this.getMultiplier(objPosition);
 
 	object.setPosition(objPosition);
@@ -272,7 +272,6 @@ Scene.prototype.setWidth = function (width) {
 
 	if(this.imageWidth === 0) return;
 	this.imageX = (this.width - this.imageWidth) / 2;
-
 };
 
 Scene.prototype.setHeight = function (height) {
