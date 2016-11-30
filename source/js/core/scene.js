@@ -21,6 +21,7 @@ function Scene(context, isTiling) {
 	this.countRightGenObj = 0;
 	this.borderOffset = 200;
 	this.bumpedObject = null;
+	this.bumpedObjectTimeout = null;
 	this.setImage(imageRepository.getImage("road"));
 }
 
@@ -38,6 +39,8 @@ Scene.prototype.reset = function () {
 	this.bumpedObject = null;
 	this.setImageY(0);
 
+	clearTimeout(this.bumpedObjectTimeout);
+
 	this.pauseAndRenderAll();
 
 	this.objectList = [];
@@ -52,6 +55,7 @@ Scene.prototype.reset = function () {
 	}
 
 	if(this.char) {
+		that.char.isHide = false;
 		this.char.render();
 	}
 
@@ -189,12 +193,13 @@ Scene.prototype.afterRender = function () {
 				this.char.isHide = true;
 				this.nextScrollDown = null;
 
-				setTimeout(function(){
+				this.bumpedObjectTimeout = setTimeout(function(){
 					that.bumpedObject.setBump(false);
 					that.char.isHide = false;
 					that.char.goTo(that.char.position === "right" ? "left":"right");
 					that.bumpedObject = null;
 				}, 3000);
+
 				return;
 			}
 		} else {

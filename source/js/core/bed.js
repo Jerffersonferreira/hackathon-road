@@ -61,6 +61,7 @@ Bed.prototype.setBump = function (value) {
 		this.accumulator = 26;
 		this.spriteTile = 1;
 	} else {
+		this.spriteDirection = 1;
 		this.accumulator = 0;
 		this.spriteTile = 0;
 		this.changeSpriteTile();
