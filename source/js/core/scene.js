@@ -7,7 +7,6 @@ var requestAnimationFrame = require("../util/request-animation-frame"),
 function Scene(context, isTiling) {
 	var that = this;
 
-	this.debug = true;
 	this.char = null;
 	this.objectList = [];
 	this.x = 0;

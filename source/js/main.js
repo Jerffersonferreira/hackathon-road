@@ -1,19 +1,33 @@
-var game = require("./core/game")(),
-	imageRepository = require("./util/image-repository")(),
-	imageList = require("./resource/image-list"),
-	interval;
+(function () {
+	var game = require("./core/game")(),
+		Screen = require("./core/screen"),
+		imageRepository = require("./util/image-repository")(),
+		imageList = require("./resource/image-list"),
+		interval,
+		screen,
+		app;
 
-imageList.forEach(function (img) {
-	imageRepository.loadImage(img.id, img.url);
-});
+	app = Zepto(".js-app");
+	screen = new Screen(app);
+	screen.loading();
 
-interval = setInterval(function () {
-	console.log("loading... " + imageRepository.totalLoadedImages + "/" + imageRepository.totalImages);
-	if(imageRepository.totalImages !== imageRepository.totalLoadedImages) return;
+	imageList.forEach(function (img) {
+		imageRepository.loadImage(img.id, img.url);
+	});
 
-	game.init(Zepto(".js-app"));
+	interval = setInterval(function () {
+		screen.updateLoadingProgress(imageRepository.totalLoadedImages/imageRepository.totalImages*100);
 
-	clearInterval(interval);
-}, 200);
+		if(imageRepository.totalImages !== imageRepository.totalLoadedImages) return;
 
-window.game = game;
+		game.setScreen(screen);
+
+		setTimeout(function(){
+			game.init(app);
+		}, 500);
+
+		clearInterval(interval);
+	}, 200);
+
+	window.game = game;
+})();

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="app js-app is-home" manifest="gamecache.manifest">
+<html lang="en" class="app js-app is-loading" manifest="gamecache.manifest">
 
 <head>
 	<title>Hackathon Road</title>
@@ -7,7 +7,7 @@
 	<link rel="icon" sizes="192x192" href="img/icon-192x192.png">
 	<link rel="apple-touch-icon-precomposed" href="img/icon-192x192.png">
 	<link rel="stylesheet" href="css/main.css">
-	<link href="https://fonts.googleapis.com/css?family=Chewy" rel="stylesheet">
+	<!--link href="https://fonts.googleapis.com/css?family=Chewy" rel="stylesheet"-->
 	<link rel="manifest" href="manifest.json">
 
 	<meta charset="utf-8">
@@ -29,6 +29,14 @@
 <!-- this doc doesn't need to be semantic :D -->
 
 <body class="app-body js-body">
+	<div class="app-loading">
+		<div class="app-loading-container">
+			<div class="app-loading-display js-loading-display">
+				0%
+			</div>
+			<div class="app-loading-progressbar js-loading-progressbar"></div>
+		</div>
+	</div>
 	<div class="app-title">
 		<h1 class="logo">
 			<img src="/img/logo.png" alt="Hackathon Road">
@@ -55,10 +63,10 @@
 		</div>
 		<!-- :gameover_board -->
 	</div>
-	<div class="app-progressbar">
-		<div class="progressbar">
-			<div class="progressbar-container">
-				<div class="progressbar-bar js-progressbar"></div>
+	<div class="app-regressbar">
+		<div class="regressbar">
+			<div class="regressbar-container">
+				<div class="regressbar-bar js-regressbar"></div>
 			</div>
 		</div>
 	</div>

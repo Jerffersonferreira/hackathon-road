@@ -10,6 +10,45 @@
 		margin: 0 auto;
 	}
 
+	&-loading {
+		.transform(opacity 200ms ease-in-out);
+
+		position: absolute;
+		width: 0;
+		height: 0;
+		top: 0;
+		left: 0;
+		background-color: #96744f;
+		z-index: 10;
+		text-align: center;
+		opacity: 0;
+
+		&-container {
+			top: 50%;
+			left: 0;
+			position: absolute;
+			width: 100%;
+			text-align: center;
+			margin-top: -35px;
+		}
+
+		&-display {
+			color: white;
+			font-family: @font-family;
+			text-align: center;
+			font-size: 40px;
+		}
+
+		&-progressbar {
+			.transition(width 200ms ease-in-out);
+
+			display: inline-block;
+			height: 3px;
+			background-color: white;
+			width: 0;
+		}
+	}
+
 	&-body {
 		min-width: 320px;
 		max-width: 600px;
@@ -18,7 +57,7 @@
 		margin: 0 auto;
 	}
 
-	&-progressbar {
+	&-regressbar {
 		.transition(transform 200ms ease-in-out);
 		.transform(translateY(-100px));
 		position: absolute;
@@ -102,7 +141,7 @@
 		opacity: 1;
 	}
 
-	&.is-ready &-progressbar {
+	&.is-ready &-regressbar {
 		.transform(translateY(0));
 	}
 
@@ -112,7 +151,7 @@
 	}
 
 	// Playing
-	&.is-playing &-progressbar {
+	&.is-playing &-regressbar {
 		.transform(translateY(0));
 	}
 
@@ -130,6 +169,13 @@
 	&.is-gameOver &-gameover_board {
 		.transform(translateY(0));
 		opacity: 1;
+	}
+
+	// Loading
+	&.is-loading &-loading {
+		opacity: 1;
+		width: 100%;
+		height: 100%;
 	}
 
 }

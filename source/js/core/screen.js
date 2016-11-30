@@ -1,6 +1,6 @@
 var MobileDetect = require("mobile-detect");
 
-function Screen(app, playButtonAction) {
+function Screen(app) {
 	var mobileDetect = new MobileDetect(window.navigator.userAgent);
 
 	this.app = app;
@@ -8,11 +8,13 @@ function Screen(app, playButtonAction) {
 	this.currentScoreDisplay = app.find(".js-current-score");
 	this.bestScoreDisplay = app.find(".js-best-score");
 	this.gameScoreDisplay = app.find(".js-gamescore");
-	this.gameScoreDisplay = app.find(".js-gamescore");
-	this.progressBar = app.find(".js-progressbar");
+	this.regressBar = app.find(".js-regressbar");
 	this.playButton = app.find(".js-playbutton");
+	this.loadingProgressBar = app.find(".js-loading-progressbar");
+	this.loadingDisplay = app.find(".js-loading-display");
 
 	this.gameStates = {
+		loading: "is-loading",
 		home: "is-home",
 		ready: "is-ready",
 		playing: "is-playing",
@@ -23,10 +25,6 @@ function Screen(app, playButtonAction) {
 		this.app.addClass("is-mobile");
 	} else {
 		this.app.addClass("is-desktop");
-	}
-
-	if(typeof playButtonAction === "function") {
-		this.playButton.on("click", playButtonAction);
 	}
 }
 
@@ -40,43 +38,56 @@ Screen.prototype = {
 
 		this.app.attr("class", classNames);
 	},
-	addState: function(state) {
+	changeState: function(state) {
+		this.resetState();
 		this.app.addClass(this.gameStates[state]);
 	},
 	gameOver: function(currentScore, bestScore) {
 		this.currentScoreDisplay.text(currentScore);
 		this.bestScoreDisplay.text(bestScore);
 
-		this.resetState();
-		this.addState("gameOver");
+		this.changeState("gameOver");
 	},
 	ready: function() {
 		var that = this;
-		this.progressBar.css("width", "0%");
-		this.progressBar.addClass("is-animated");
+		this.regressBar.css("width", "0%");
+		this.regressBar.addClass("is-animated");
 
 		setTimeout(function(){
-			that.progressBar.css("width", "50%");
+			that.regressBar.css("width", "50%");
 
 			setTimeout(function() {
-				that.progressBar.removeClass("is-animated");
+				that.regressBar.removeClass("is-animated");
 			}, 1000);
 		}, 1);
 
 		this.gameScoreDisplay.text(0);
 
-		this.resetState();
-		this.addState("ready");
+		this.changeState("ready");
 	},
 	playing: function() {
-		this.resetState();
-		this.addState("playing");
+		this.changeState("playing");
+	},
+	loading: function() {
+		this.changeState("loading");
+	},
+	home: function() {
+		this.changeState("home");
 	},
 	updateScore: function(score) {
 		this.gameScoreDisplay.text(score);
 	},
-	updateProgressBar: function(size) {
-		this.progressBar.css("width", size);
+	updateRegressBar: function(size) {
+		this.regressBar.css("width", size);
+	},
+	setPlayButtonAction: function(playButtonAction) {
+		if(typeof playButtonAction === "function") {
+			this.playButton.on("click", playButtonAction);
+		}
+	},
+	updateLoadingProgress: function(value) {
+		this.loadingDisplay.text(value + "%");
+		this.loadingProgressBar.css("width", value + "%");
 	}
 };
 

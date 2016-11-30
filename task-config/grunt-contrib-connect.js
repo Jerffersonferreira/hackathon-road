@@ -14,7 +14,7 @@ function connect(name) {
 
 	return {
 		options: {
-			hostname: "192.168.25.223",
+			hostname: "localhost",
 			livereload: false,
 			port: port,
 			base: base

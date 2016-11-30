@@ -2,7 +2,6 @@ var instance,
 	requestAnimationFrame = require("../util/request-animation-frame"),
 	MobileDetect = require("mobile-detect"),
 	Drawable = require("../core/drawable"),
-	Screen = require("../core/screen"),
 	Scene = require("../core/scene"),
 	Char = require("../core/char");
 
@@ -23,7 +22,8 @@ function Game() {
 
 Game.prototype = {
 	init: function (app) {
-		var wrapperElement;
+		var wrapperElement,
+			that = this;
 
 		if(this.initialized) return;
 		this.initialized = true;
@@ -36,10 +36,14 @@ Game.prototype = {
 
 		this.createCanvasElem(wrapperElement);
 
-		this.addScreen();
 		this.addScene();
 		this.addChar();
 		this.reset();
+		this.screen.home();
+
+		this.screen.setPlayButtonAction(function(event) {
+			that.playButtonAction(event);
+		});
 	},
 	reset: function() {
 		var that = this;
@@ -70,7 +74,7 @@ Game.prototype = {
 		this.char = new Char(this.context);
 		this.scene.addChar(this.char);
 	},
-	playButtonAction: function() {
+	playButtonAction: function(event) {
 		if(this.started && !this.isGameOver) {
 			return;
 		} else if(this.isGameOver) {
@@ -79,13 +83,11 @@ Game.prototype = {
 			this.addControls();
 		}
 
+		event.stopPropagation();
 		this.screen.ready();
 	},
-	addScreen: function() {
-		var that = this;
-		this.screen = new Screen(this.app, function() {
-			that.playButtonAction();
-		});
+	setScreen: function(screen){
+		this.screen = screen;
 	},
 	addScene: function () {
 		var that = this;
@@ -134,10 +136,6 @@ Game.prototype = {
 			charPosition = "right";
 		}
 
-		if(!charPosition) {
-			return;
-		}
-
 		this.scene.scrollDown(charPosition);
 	},
 	addControls: function () {
@@ -178,7 +176,7 @@ Game.prototype = {
 		}
 
 		this.remainingTime -= this.timeStep;
-		this.screen.updateProgressBar(this.remainingTime/1000 * 100 + "%");
+		this.screen.updateRegressBar(this.remainingTime/1000 * 100 + "%");
 
 		requestAnimationFrame(function () {
 			that.increment();
