@@ -49,5 +49,5 @@ module.exports = function (grunt) {
 	grunt.registerTask("images:prod", ["clean:img", "copy:img"]);
 	grunt.registerTask("javascript:prod", ["clean:js", "browserify:prod"]);
 
-	grunt.registerTask("build", ["css:prod", "images:prod", "javascript:prod"]);
+	grunt.registerTask("build", ["html", "css:prod", "images:prod", "javascript:prod"]);
 };
